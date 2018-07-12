@@ -1,0 +1,41 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test-watch": "jest --watchAll",
+    "test": "jest --forceExit",
+    "lint": "eslint **/*.js"
+    },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/code-commando/api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/code-commando/api/issues"
+  },
+  "homepage": "https://github.com/code-commando/api#readme",
+  "dependencies": {
+    "babel-env": "^2.4.1",
+    "babel-eslint": "^8.2.5",
+    "babel-register": "^6.26.0",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
+    "eslint": "^5.1.0",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "mockgoose": "^7.3.5",
+    "mongoose": "^5.2.3",
+    "morgan": "^1.9.0",
+    "require-dir": "^1.0.0",
+    "superagent": "^3.8.3",
+    "supertest": "^3.1.0",
+    "uuid": "^3.3.2"
+  }
+}
