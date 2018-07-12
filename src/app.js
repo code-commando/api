@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // app.use(cookieParser());
 
-// app.use(authRouter);
+app.use(router);
 // app.use(profileRouter);
 // app.use(upload);
 // app.use(noBody);

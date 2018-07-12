@@ -6,6 +6,9 @@ const router = express.Router();
 import modelFinder from '../middleware/models.js';
 router.param('model', modelFinder);
 
+import classRoster from '../models/classRoster';
+classRoster;
+
 
 router.get('/api/v1/:model', (req,res,next) => {
   req.model.find({})
