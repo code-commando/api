@@ -1,10 +1,15 @@
 'use strict';
 
-var randomIndex = 0;
+let allQuizzes = ['apple', 'banana', 'mango', 'strawberry', 'kiwi', 'peach', 'red vines', 'blackberry', 'cherry', 'lime'];
 
-function randomBuddy (event) {
-  var maxIndex = buddyArray.length;
-  randomIndex = Math.floor((Math.random() * maxIndex));
-};
+let randomIndex = 0;
+let questions = [];
 
-la la;
+function randomQuiz () {
+  let maxIndex = allQuizzes.length;
+  for (let i = 0; i < 5; i++) {
+    randomIndex = Math.floor((Math.random() * maxIndex));
+    questions.push(allQuizzes[randomIndex]);
+    console.log(questions);    
+  }
+}
