@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 
 
-const studentSchema = new mongoose.Schema({
+const StudentSchema = mongoose.Schema({
   id: {type: Number, required: true},
   name: {type: String, required: true},
   sortable_name: {type: String, required: true},
@@ -11,6 +11,6 @@ const studentSchema = new mongoose.Schema({
 });
 
 
-export default mongoose.model('roster', studentSchema);
+export default mongoose.model('classroster', StudentSchema);
 
 
