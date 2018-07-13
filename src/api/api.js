@@ -6,6 +6,11 @@ const router = express.Router();
 import modelFinder from '../middleware/modelHelper';
 router.param('model', modelFinder);
 
+import randomStudent from '../middleware/random';
+import randomPairs from '../middleware/randompairs';
+
+
+
 
 router.get('/api/v1/:model', (req,res,next) => {
   req.model.find({})
@@ -13,11 +18,32 @@ router.get('/api/v1/:model', (req,res,next) => {
     .catch( next );
 });
 
-router.get('/api/v1/:model/:id', (req,res,next) => {
-  req.model.findOne({_id:req.params.id})
-    .then( data => sendJSON(res,data) )
-    .catch( next );
+
+router.get('/api/v1/:model/random', (req, res) => {
+  req.model.find({})
+    .then(students => {
+      let studentNames = students.map(student => {
+        return student.name;
+      });
+      res.send(randomStudent(studentNames));
+    });
 });
+
+router.get('/api/v1/:model/pairs', (req, res) => {
+  req.model.find({})
+    .then(students => {
+      let studentNames = students.map(student => {
+        return student.name;
+      });
+      res.send(randomPairs(studentNames));
+    });
+});
+
+// router.get('/api/v1/:model/:id', (req,res,next) => {
+//   req.model.findOne({_id:req.params.id})
+//     .then( data => sendJSON(res,data) )
+//     .catch( next );
+// });
 
 router.post('/api/v1/:model', (req,res,next) => {
   let record = new req.model(req.body);

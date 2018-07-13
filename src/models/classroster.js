@@ -1,6 +1,9 @@
 'use strict';
 
+// import express from 'express';
 import mongoose from 'mongoose';
+// import randomStudent from '../middleware/random';
+// const router = express.Router();
 
 
 const StudentSchema = mongoose.Schema({
@@ -12,5 +15,7 @@ const StudentSchema = mongoose.Schema({
 
 
 export default mongoose.model('classroster', StudentSchema);
+
+
 
 
