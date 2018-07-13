@@ -25,8 +25,12 @@ userSchema.statics.createFromOAuth = function (gitHubUser) {
   return this.findOne({ user: gitHubUser.user })
     .then(found => {
       if (!found) { throw new Error('User Not Found'); }
-      console.log('Welcome Back!', found.username);
-      return found;
+      console.log('Welcome Back!', found.user);
+      found.jwt = gitHubUser.jwt;
+      return found.save()
+        .then(data =>{
+          return data;
+        });
     })
     .catch((error) => {
       console.log(error);
