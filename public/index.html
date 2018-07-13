@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Auth Test</title>
+</head>
+
+<body>
+  <main>
+
+    <div id="oauth"></div>
+
+    <hr> Access Token:
+    <span id="token"></span>
+    <hr>
+    <hr />
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+  <script>
+
+    let githubURL = "https://github.com/login/oauth/authorize";
+
+    let options = {
+      // local
+      // client_id: 'd6c0defbd80f3979493a',
+      //live
+      client_id: 'f749977a8455b627dc56',
+      // redirect_uri: 'http://localhost:3000/oauth',
+      redirect_uri: 'https://code-commando.herokuapp.com/oauth',
+      scope: 'read:user',
+      state: 'autumn',
+      allow_signup: 'true',
+    }
+
+    let QueryString = Object.keys(options).map((key, i) => {
+      return `${key}=` + encodeURIComponent(options[key]);
+    }).join("&");
+
+    let authURL = `${githubURL}?${QueryString}`;
+
+    $('#oauth').append(`<a href="${authURL}">Login With GitHub</a>`);
+  </script>
+
+
+</body>
+
+</html>

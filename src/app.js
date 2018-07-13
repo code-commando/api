@@ -6,6 +6,14 @@ import cors from 'cors';
 // import cookieParser from 'cookie-parser';
 
 import router from './api/api.js';
+import authRouter from './auth/auth.js';
+
+import notFound from './middleware/404.js';
+import noAuth from './middleware/401.js';
+import errorHandler from './middleware/error.js';
+import noBody from './middleware/400.js';
+
+
 
 let app = express();
 
@@ -15,15 +23,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // app.use(cookieParser());
 
-// app.use(authRouter);
-// app.use(profileRouter);
-// app.use(upload);
-// app.use(noBody);
-// app.use(imageRouter);
+app.use(router);
+app.use(authRouter);
 
-// app.use(notFound);
-// app.use(noAuth);
-// app.use(errorHandler);
+app.use(notFound);
+app.use(noAuth);
+app.use(noBody);
+app.use(errorHandler);
 
 let server = false;
 
