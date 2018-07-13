@@ -3,7 +3,7 @@
 import express from 'express';
 const router = express.Router();
 
-import modelFinder from '../middleware/models.js';
+import modelFinder from '../middleware/modelHelper.js';
 router.param('model', modelFinder);
 
 
@@ -63,4 +63,5 @@ router.put('/api/v1/:model/:id', (req, res, next) => {
 
   }
 });
+
 export default router;
