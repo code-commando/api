@@ -5,7 +5,7 @@ import fs from 'fs';
 const authRouter = express.Router();
 
 import oauth from './lib/oauth.js';
-
+import auth from './middleware.js';
 
 authRouter.get('/', (req,res, next) => {
   fs.readFile(__dirname + '/../../public/index.html', (err, data) => {
@@ -26,5 +26,9 @@ authRouter.get('/oauth', (req, res, next) => {
     .catch(next);
 
 });
+
+authRouter.get('/test', auth, (req,res,next) => {
+  res.send('YOU DID IT')
+})
 
 export default authRouter;

@@ -1,9 +1,10 @@
 'use strict';
 import superagent from 'superagent';
+import User from '../../models/user';
 const authorize = (req) => {
 
   let code = req.query.code;
-
+  let gitHubToken;
   console.log('(1 Got code from Github)', code);
 
   return superagent.get('https://github.com/login/oauth/access_token')
@@ -15,7 +16,7 @@ const authorize = (req) => {
       state: process.env.SECRET,
     })
     .then(response => {
-      let gitHubToken = response.body.access_token;
+      gitHubToken = response.body.access_token;
       console.log('(2) got a token from Github response body', response.body);
       console.log('(2) got a token from Github', gitHubToken);
       return gitHubToken;
@@ -28,16 +29,20 @@ const authorize = (req) => {
           console.log('(3) Got User info');
           return user;
         });
+    })
+    .then(user => {
+      let newUser = {
+        user: user.login,
+        jwt: gitHubToken,
+      };
+      console.log(newUser);
+      console.log('(4) Create Account ');
+      return User.createFromOAuth(newUser);
+    })
+    .then(newUser => {
+      console.log('5. user model created, making token');
+      return newUser.generateToken();
     });
-//     .then(user => {
-//       console.log('(4) Create Account ');
-//     })
-//     .then(loggedInUser => {
-//       console.log('(5) we did it');
-//       return loggedInUser.generateToken();
-//     })
-//     .catch(error => error);
-// };
-
 };
+
 export default { authorize };
