@@ -49,6 +49,7 @@ export default class Quiz {
 
   quizRandom(){
     // has method that A & J are working on 
+
     
   }
 
