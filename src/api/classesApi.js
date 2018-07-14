@@ -41,3 +41,16 @@ router.post(url, (req, res, next) => {
     }).catch(next);
 });
 
+router.delete(`${url}${id}`, (req, res, next) => {
+
+  req.model.findByIdAndDelete(req.params.id)
+    .then(data => sendJSON(res, data))
+    .catch(next);
+});
+
+router.put(`${url}${id}`, (req, res, next) => {
+
+  req.model.findByIdAndUpdate(req.params.id, req.body, {new:true})
+    .then(model => sendJSON(res, model))
+    .catch(next);
+});
