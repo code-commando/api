@@ -28,7 +28,7 @@ authRouter.get('/oauth', (req, res, next) => {
 });
 
 authRouter.get('/test', auth, (req,res,next) => {
-  res.send('YOU DID IT')
-})
+  res.send('YOU DID IT');
+});
 
 export default authRouter;
