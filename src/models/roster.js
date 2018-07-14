@@ -11,10 +11,11 @@ const StudentSchema = mongoose.Schema({
 });
 
 
-// StudentSchema.pre('save', () => {
-
-
-// });
+StudentSchema.pre('save', function(next) {
+  StudentSchema.sortable_name = StudentSchema.name.split(' ').reverse().join(' ')
+    .then(next)
+    .catch(error => {throw error;});
+});
 
 
 // export default mongoose.model('classroster', StudentSchema);
@@ -26,7 +27,7 @@ export default {
     return StudenModel.find()
       .then(studentList => {
         let results = studentList.map(stud => {
-          return stud.name;
+          return stud.sortable_name;
         });
         let count = results.length;
         return {count, results};
