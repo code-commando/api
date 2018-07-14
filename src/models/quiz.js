@@ -35,7 +35,7 @@ export default class Quiz {
           "All of the above"
         ]
       },
-    ],
+    ]
     // returns an array of arrays containing objects 01: [[{questions/answers}, [{questions/answers}], etc..]
   }
 
@@ -50,8 +50,23 @@ export default class Quiz {
   quizRandom(){
     // has method that A & J are working on 
 
-    
+
   }
 
 
+  // /api/v1/quiz/12 
+  // Expect 5 random questions from days 1 through ##-1. 
+  // Output expected:
+  // {
+  //   count: 5, 
+  //   results: [
+  //     {
+  //       question: "Some question?", 
+  //       answers: [1,2,3,4],
+  //       correctAnswer: '4'
+  //     }, 
+  //     ...
+  //   ]
+  // }
+  // Todays goal: fetch  a /quiz.json from  each day's folder in guide repo
 }
