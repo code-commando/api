@@ -39,11 +39,11 @@ router.get('/api/v1/:model/pairs', (req, res) => {
     });
 });
 
-// router.get('/api/v1/:model/:id', (req,res,next) => {
-//   req.model.findOne({_id:req.params.id})
-//     .then( data => sendJSON(res,data) )
-//     .catch( next );
-// });
+router.get('/api/v1/:model/:id', (req,res,next) => {
+  req.model.findOne({_id:req.params.id})
+    .then( data => sendJSON(res,data) )
+    .catch( next );
+});
 
 router.post('/api/v1/:model', (req,res,next) => {
   let record = new req.model(req.body);
