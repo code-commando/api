@@ -11,7 +11,15 @@
 
 <body>
     <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
+    <!-- <div id="" style="width:800px;height:600px;border:1px solid grey">
+        <form>
+            <input type="text" id="container" style="width:800px;height:600px;border:1px solid grey">
+        </form>
+        
+        
+    </div> -->
     <button id='run' type="submit">Run</button>
+
     <label id="result"></label>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
@@ -28,26 +36,26 @@
 
     <script>
         var editor = monaco.editor.create(document.getElementById('container'), {
-            value: [
-                'function x() {',
-                '\tconsole.log("Hello world!");',
-                '}'
-            ].join('\n'),
+            value: [].join('\n'),
             language: 'javascript'
         });
     </script>
+      
     <script>
         $('#run').on('click', function (e) {
             e.preventDefault();
-            console.log('calling router');
+            // console.log('calling router', editor.getValue());
+            let data = editor.getValue();
+            let obj = {}
+            obj.code = data;
+            console.log('data -->', obj);
             $.ajax({
                 type: "POST",
-                contentType: 'multipart/form-data',
-                url: "http://localhost:3000/api/v1/editor",
-                async: false,
+                url: "http://localhost:3000/api/v1/code",
+                data: obj,
                 success: function (data) {
                     console.log(data);
-                    $('#result').text(data);
+                    $('#result').text(JSON.stringify(data));
                 },
             });
         });

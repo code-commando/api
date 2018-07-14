@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 // import cookieParser from 'cookie-parser';
 
+import replRouter from './repl/nel/router';
 import router from './api/api.js';
 import authRouter from './auth/auth.js';
 
@@ -12,7 +13,6 @@ import notFound from './middleware/404.js';
 import noAuth from './middleware/401.js';
 import errorHandler from './middleware/error.js';
 import noBody from './middleware/400.js';
-import replRouter from './repl/nel/router';
 
 
 let app = express();
