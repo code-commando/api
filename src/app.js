@@ -12,7 +12,7 @@ import notFound from './middleware/404.js';
 import noAuth from './middleware/401.js';
 import errorHandler from './middleware/error.js';
 import noBody from './middleware/400.js';
-// import replRouter from './repl/nel/router';
+import replRouter from './repl/nel/router';
 
 
 let app = express();
@@ -22,10 +22,10 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // app.use(cookieParser());
-
+app.use(replRouter);
 app.use(router);
 app.use(authRouter);
-// app.use(replRouter);
+
 
 app.use(notFound);
 app.use(noAuth);

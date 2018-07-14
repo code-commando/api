@@ -41,7 +41,8 @@
             e.preventDefault();
             console.log('calling router');
             $.ajax({
-                type: "GET",
+                type: "POST",
+                contentType: 'multipart/form-data',
                 url: "http://localhost:3000/api/v1/editor",
                 async: false,
                 success: function (data) {
