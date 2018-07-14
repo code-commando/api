@@ -21,21 +21,15 @@ router.get('/api/v1/:model', (req,res,next) => {
 
 router.get('/api/v1/:model/random', (req, res) => {
   req.model.find({})
-    .then(students => {
-      let studentNames = students.map(student => {
-        return student.name;
-      });
-      res.send(randomStudent(studentNames));
+    .then(studentNames => {
+      res.send(randomStudent(studentNames.results));
     });
 });
 
 router.get('/api/v1/:model/pairs', (req, res) => {
   req.model.find({})
-    .then(students => {
-      let studentNames = students.map(student => {
-        return student.name;
-      });
-      res.send(randomPairs(studentNames));
+    .then(studentNames => {
+      res.send(randomPairs(studentNames.results));
     });
 });
 

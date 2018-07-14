@@ -11,8 +11,28 @@ const StudentSchema = mongoose.Schema({
 });
 
 
-export default mongoose.model('classroster', StudentSchema);
+// StudentSchema.pre('save', () => {
 
+
+// });
+
+
+// export default mongoose.model('classroster', StudentSchema);
+const StudenModel = mongoose.model('classroster', StudentSchema);
+
+
+export default {
+  find: () => {
+    return StudenModel.find()
+      .then(studentList => {
+        let results = studentList.map(stud => {
+          return stud.name;
+        });
+        let count = results.length;
+        return {count, results};
+      });
+  },
+};
 
 
 
