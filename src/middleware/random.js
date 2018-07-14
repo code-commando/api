@@ -9,9 +9,9 @@ function randomStudent(arr) {
     arr[j] = arr[i];
     arr[i] = temp;
   }
-  return arr[0];
-
-  
+  return {
+    results: [arr[0]],
+  };
 }
 
 export default randomStudent;

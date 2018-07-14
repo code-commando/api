@@ -19,8 +19,10 @@ function randomPairs(classArr) {
     extra = classArr.pop();
     pairs[pairs.length -1 ].push(extra);
   }
-  
-  return pairs;
+
+  return {
+    results:  pairs,
+  };
 }
 
 export default randomPairs;
