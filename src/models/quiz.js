@@ -45,21 +45,22 @@ export default class Quiz {
   process(){
     let quizArr = [
       {
-        "question": "NPM is a dependency manager",
-        "answers": [
-          "True",
-          "False"
-        ],
-        "correctAnswer": "True"
+        'question': 'What year is it?',
+        'answers': [
+          2019,
+          2018,
+          2017,
+          2016
+        ]
       },
       {
-        "question": "What can you use package.json for?",
-        "answers": [
-          "Defining Scripts",
-          "Assigning Permissions",
-          "Connecting to github repo"
-        ],
-        "correctAnswer": "Defining Scripts"
+        'question': 'Who is Billy Jean?',
+        'answers': [
+          'Not my lover',
+          'Just a girl',
+          'A beauty queen',
+          'All of the above'
+        ]
       },
       {
         "question": "What is an advantage of doing TDD?",
@@ -91,7 +92,7 @@ export default class Quiz {
   //   count: 5, 
   //   results: [
   //     {
-  //       question: "Some question?", 
+  //       question: 'Some question?', 
   //       answers: [1,2,3,4],
   //       correctAnswer: '4'
   //     }, 
