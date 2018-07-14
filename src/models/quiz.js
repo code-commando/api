@@ -15,27 +15,27 @@ export default class Quiz {
     // method to sort, randomize, return
   }
 
-  fetch(){
+  fetch() {
     let obj = [
       {
-        "question": "What year is it?",
-        "answers": [
+        'question': 'What year is it?',
+        'answers': [
           2019,
           2018,
           2017,
-          2016
-        ]
+          2016,
+        ],
       },
       {
-        "question": "Who is Billy Jean?",
-        "answers": [
-          "Not my lover",
-          "Just a girl",
-          "A beauty queen",
-          "All of the above"
-        ]
+        'question': 'Who is Billy Jean?',
+        'answers': [
+          'Not my lover',
+          'Just a girl',
+          'A beauty queen',
+          'All of the above',
+        ],
       },
-    ],
+    ];
     // returns an array of arrays containing objects 01: [[{questions/answers}, [{questions/answers}], etc..]
   }
 
@@ -52,6 +52,4 @@ export default class Quiz {
 
     
   }
-
-
 }
