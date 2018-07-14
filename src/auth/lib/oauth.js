@@ -17,7 +17,7 @@ const authorize = (req) => {
     })
     .then(response => {
       gitHubToken = response.body.access_token;
-      console.log('(2) got a token from Github response body', response.body);
+      // console.log('(2) got a token from Github response body', response.body);
       console.log('(2) got a token from Github', gitHubToken);
       return gitHubToken;
     })
@@ -26,7 +26,7 @@ const authorize = (req) => {
       return superagent.get(`https://api.github.com/user?access_token=${token}`)
         .then(response => {
           let user = response.body;
-          console.log('(3) Got User info');
+          console.log('(3) Got User info', user);
           return user;
         });
     })

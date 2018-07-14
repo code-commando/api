@@ -8,14 +8,6 @@ const userSchema = new mongoose.Schema({
   jwt: { type: String, required: true },
 });
 
-userSchema.pre('save', function (next) {
-  bcrypt.hash(this.jwt, 10)
-    .then(hashed => {
-      this.jwt = hashed;
-      next();
-    })
-    .catch(err => { throw err; });
-});
 
 userSchema.statics.createFromOAuth = function (gitHubUser) {
   if (!gitHubUser || !gitHubUser.user) {
@@ -43,12 +35,6 @@ userSchema.statics.createFromOAuth = function (gitHubUser) {
     });
 };
 
-userSchema.methods.passwordCheck = function (jwt) {
-  return bcrypt.compare(jwt, this.jwt)
-    .then(response => {
-      return response ? this : null;
-    });
-};
 
 userSchema.methods.generateToken = function() {
   return jwt.sign({id:this._id}, process.env.APP_SECRET || 'ASKDjl1k2312lkjlakjLKSDJ9lk12j3oal2');
