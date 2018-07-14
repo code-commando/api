@@ -14,6 +14,7 @@ router.get('/api/v1/:model', (req,res,next) => {
 });
 
 router.get('/api/v1/:model/:id', (req,res,next) => {
+  console.log({model:req.model});
   req.model.findOne({_id:req.params.id})
     .then( data => sendJSON(res,data) )
     .catch( next );

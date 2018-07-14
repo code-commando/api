@@ -1,35 +1,45 @@
 'use strict';
 
 import express from 'express';
-import morgan from 'morgan';
-import cors from 'cors';
+// import morgan from 'morgan';
+// import cors from 'cors';
 // import cookieParser from 'cookie-parser';
 
-import router from './api/api.js';
-import authRouter from './auth/auth.js';
+// import router from './api/api.js';
+// import authRouter from './auth/auth.js';
 
-import notFound from './middleware/404.js';
-import noAuth from './middleware/401.js';
-import errorHandler from './middleware/error.js';
-import noBody from './middleware/400.js';
+// import notFound from './middleware/404.js';
+// import noAuth from './middleware/401.js';
+// import errorHandler from './middleware/error.js';
+// import noBody from './middleware/400.js';
 
-
+import Quiz from './models/quiz.js';
 
 let app = express();
 
-app.use(cors());
-app.use(morgan('dev'));
+// app.use(cors());
+// app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+// app.use(express.urlencoded({extended: true}));
 // app.use(cookieParser());
+app.get('/api/v1/quiz/:id', (req, res, next) => {
+  Quiz.findOne(req.params.id)
+    .then( data => res.send(data) )
+    .catch( next );
+});
 
-app.use(router);
-app.use(authRouter);
+app.get('/api/v1/quiz', (req, res) => {
+  Quiz.find()
+    .then( data => res.send(data) )
+    .catch( next );
+});
+// app.use(router);
+// app.use(authRouter);
 
-app.use(notFound);
-app.use(noAuth);
-app.use(noBody);
-app.use(errorHandler);
+// app.use(notFound);
+// app.use(noAuth);
+// app.use(noBody);
+// app.use(errorHandler);
 
 let server = false;
 

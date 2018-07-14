@@ -31,6 +31,7 @@
     "eslint": "^5.1.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
+    "list-github-dir-content": "^1.1.0",
     "mockgoose": "^7.3.5",
     "mongoose": "^5.2.3",
     "morgan": "^1.9.0",
