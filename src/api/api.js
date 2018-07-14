@@ -7,7 +7,7 @@ import modelFinder from '../middleware/modelHelper';
 router.param('model', modelFinder);
 
 import randomStudent from '../middleware/random';
-import randomPairs from '../middleware/randompairs';
+import randomPairs from '../middleware/pairs';
 
 
 
