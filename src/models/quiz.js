@@ -1,3 +1,5 @@
+'use strict';
+
 // const import fs from 'fs';
 // var obj = JSON.parse(fs.readFileSync('file', 'utf8'));
 // import three other files containing other objects until we are done, to avoid merge conflicts
@@ -18,8 +20,8 @@ export default class Quiz {
   fetch(){
     let obj = [
       {
-        "question": "What year is it?",
-        "answers": [
+        'question': 'What year is it?',
+        'answers': [
           2019,
           2018,
           2017,
@@ -27,12 +29,12 @@ export default class Quiz {
         ]
       },
       {
-        "question": "Who is Billy Jean?",
-        "answers": [
-          "Not my lover",
-          "Just a girl",
-          "A beauty queen",
-          "All of the above"
+        'question': 'Who is Billy Jean?',
+        'answers': [
+          'Not my lover',
+          'Just a girl',
+          'A beauty queen',
+          'All of the above'
         ]
       },
     ]
@@ -61,7 +63,7 @@ export default class Quiz {
   //   count: 5, 
   //   results: [
   //     {
-  //       question: "Some question?", 
+  //       question: 'Some question?', 
   //       answers: [1,2,3,4],
   //       correctAnswer: '4'
   //     }, 
