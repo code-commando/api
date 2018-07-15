@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="./monaco/monaco-editor/min/vs/editor/editor.main.css">
+</head>
+
+<body>
+    <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
+    <!-- <div id="" style="width:800px;height:600px;border:1px solid grey">
+        <form>
+            <input type="text" id="container" style="width:800px;height:600px;border:1px solid grey">
+        </form>
+        
+        
+    </div> -->
+    <button id='run' type="submit">Run</button>
+
+    <label id="result"></label>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script>
+        var require = {
+            paths: {
+                'vs': '../../node_modules/monaco-editor/min/vs'
+            }
+        };
+    </script>
+    <script src="./monaco/monaco-editor/min/vs/loader.js"></script>
+    <script src="./monaco/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+    <script src="./monaco/monaco-editor/min/vs/editor/editor.main.js"></script>
+
+    <script>
+        var editor = monaco.editor.create(document.getElementById('container'), {
+            value: [].join('\n'),
+            language: 'javascript',
+            themeName: 'vs-dark'    
+        });
+    </script>
+      
+    <script>
+        $('#run').on('click', function (e) {
+            e.preventDefault();
+            // console.log('calling router', editor.getValue());
+            let data = editor.getValue();
+            let obj = {}
+            obj.code = data;
+            console.log('data -->', obj);
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/api/v1/code",
+                data: obj,
+                success: function (data) {
+                    console.log(data);
+                    $('#result').text(JSON.stringify(data));
+                },
+            });
+        });
+    </script>
+</body>
+
+</html>
