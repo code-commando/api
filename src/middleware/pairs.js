@@ -1,6 +1,6 @@
 'use strict';
 
-function randomPairs(classArr) {
+function randomPairs(classArr, code) {
   for (var i = 0; i < classArr.length - 1; i++) {
     var j = i + Math.floor(Math.random() * (classArr.length - i));
     var temp = classArr[j];
@@ -30,6 +30,7 @@ function randomPairs(classArr) {
   return {
     count,
     results:  newArr,
+    classCode: code,
   };
 }
 

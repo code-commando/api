@@ -15,10 +15,12 @@ router.get('/api/v1/:model', (req,res,next) => {
     req.model.find({})
       .then(data => {
         let studentName = data.map(student => student.name);
+        let code = data.map(student => student.classCode);
         let count = studentName.length;
         return {
           count,
           results: studentName,
+          classCode: code,
         };
       })
       .then( data => sendJSON(res,data) )
@@ -31,23 +33,20 @@ router.get('/api/v1/:model', (req,res,next) => {
 
 
 router.get('/api/v1/:model/random', (req, res) => {
-  console.log('dsomething', req);
   req.model.find({})
     .then(students => {
-      let studentNames = students.map(student => {
-        return student.name;
-      });
-      res.send(randomStudent(studentNames));
+      let studentNames = students.map(student => student.name);
+      let code = students.map(student => student.classCode);
+      res.send(randomStudent(studentNames, code));
     });
 });
 
 router.get('/api/v1/:model/pairs', (req, res) => {
   req.model.find({})
     .then(students => {
-      let studentNames = students.map(student => {
-        return student.name;
-      });
-      res.send(randomPairs(studentNames));
+      let studentNames = students.map(student => student.name);
+      let code = students.map(student => student.classCode);
+      res.send(randomPairs(studentNames, code));
     });
 });
 
