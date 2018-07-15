@@ -9,8 +9,12 @@ function randomStudent(arr) {
     arr[j] = arr[i];
     arr[i] = temp;
   }
+  let results = [arr[0]];
+  let count = results.length;
   return {
-    results: [arr[0]],
+    count,
+    results: results,
+    // classCode: ,
   };
 }
 

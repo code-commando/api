@@ -20,7 +20,10 @@ function randomPairs(classArr) {
     pairs[pairs.length -1 ].push(extra);
   }
 
+  let count = pairs.length;
+
   return {
+    count,
     results:  pairs,
   };
 }

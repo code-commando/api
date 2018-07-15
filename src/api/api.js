@@ -9,8 +9,14 @@ router.param('model', modelFinder);
 import randomStudent from '../middleware/random';
 import randomPairs from '../middleware/pairs';
 
-
-
+router.get('/api/v1/roster', (req,res,next) => {
+  req.model.find({})
+    .then(data => {
+      return data.map(student => student.name);
+    })
+    .then( data => sendJSON(res,data) )
+    .catch( next );
+});
 
 router.get('/api/v1/:model', (req,res,next) => {
   req.model.find({})
@@ -19,18 +25,38 @@ router.get('/api/v1/:model', (req,res,next) => {
 });
 
 
-router.get('/api/v1/:model/random', (req, res) => {
+router.get('/api/v1/roster/random', (req, res) => {
   req.model.find({})
+    .then(data => {
+      return data.map(student => student.name);
+    })
     .then(studentNames => {
-      res.send(randomStudent(studentNames.results));
+      res.send(randomStudent(studentNames));
     });
 });
 
-router.get('/api/v1/:model/pairs', (req, res) => {
+router.get('/api/v1/roster/pairs', (req, res) => {
   req.model.find({})
     .then(studentNames => {
       res.send(randomPairs(studentNames.results));
     });
+});
+
+
+router.get('/api/v1/roster/:classCode', (req, res, next) => {
+  req.model.find({classCode: req.params.classCode})
+    .then( data => sendJSON(res,data) )
+    .catch( next );
+});
+
+router.post('/api/v1/roster', (req, res, next) => {
+  res.send('hi!!');
+  console.log('j[weoijfoew', req.model);
+  // req.model.create(req.body)
+  //   .then(student => {
+  //     sendJSON(res, student);
+  //   })
+  //   .catch(next);
 });
 
 router.get('/api/v1/:model/:id', (req,res,next) => {
