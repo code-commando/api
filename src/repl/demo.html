@@ -45,10 +45,11 @@
     <script>
         $('#run').on('click', function (e) {
             e.preventDefault();
-            // console.log('calling router', editor.getValue());
             let data = editor.getValue();
             let obj = {}
             obj.code = data;
+            obj.fileName = 'reverseString-4';
+            obj.day = '01-introduction'
             console.log('data -->', obj);
             $.ajax({
                 type: "POST",
