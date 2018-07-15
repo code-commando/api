@@ -10,7 +10,7 @@ class editor {
     // find: () => {
     //   console.log('hello', req);
     //var result;
-   // let code = this.data.code;
+    // let code = this.data.code;
     // console.log(solution);
     // let session = new nel.Session();
     // var solution = {};
