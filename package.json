@@ -8,7 +8,9 @@
     "watch": "nodemon index.js",
     "test-watch": "jest --watchAll",
     "test": "jest --forceExit",
-    "lint": "eslint **/*.js"
+    "lint": "eslint **/*.js",
+    "dbon": "mkdir -p ./db && mongod --dbpath ./db",
+    "dboff": "killall mongod"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
     "babel-env": "^2.4.1",
     "babel-eslint": "^8.2.5",
     "babel-register": "^6.26.0",
+    "bcrypt": "^3.0.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
