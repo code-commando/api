@@ -60,7 +60,6 @@ router.put('/api/v1/:model/:id', (req, res, next) => {
         sendJSON(res, data);
       })
       .catch(next);
-
   }
 });
 
