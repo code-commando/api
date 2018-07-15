@@ -20,11 +20,16 @@ function randomPairs(classArr) {
     pairs[pairs.length -1 ].push(extra);
   }
 
+  var newArr = [];
+  for (let k = 0; k < pairs.length; k ++ ){
+    newArr.push(pairs[k].join().split(','));
+  }
+
   let count = pairs.length;
 
   return {
     count,
-    results:  pairs,
+    results:  newArr,
   };
 }
 

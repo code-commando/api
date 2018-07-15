@@ -19,7 +19,5 @@ const StudentSchema = mongoose.Schema({
 // });
 
 
-export default mongoose.model('classroster', StudentSchema);
-
-
+export default mongoose.model('classrosters', StudentSchema);
 
