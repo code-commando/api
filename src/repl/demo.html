@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="./monaco/monaco-editor/min/vs/editor/editor.main.css">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="./monaco/vs/editor.main.css">
 </head>
 
 <body>
@@ -26,13 +26,13 @@
     <script>
         var require = {
             paths: {
-                'vs': '../../node_modules/monaco-editor/min/vs'
+                'vs': './monaco/vs'
             }
         };
     </script>
-    <script src="./monaco/monaco-editor/min/vs/loader.js"></script>
-    <script src="./monaco/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
-    <script src="./monaco/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script src="./monaco/vs/loader.js"></script>
+    <script src="./monaco/vs/editor/editor.main.nls.js"></script>
+    <script src="./monaco/vs/editor/editor.main.js"></script>
 
     <script>
         var editor = monaco.editor.create(document.getElementById('container'), {
@@ -48,8 +48,9 @@
             let data = editor.getValue();
             let obj = {}
             obj.code = data;
-            obj.fileName = 'reverseString-4';
-            obj.day = '01-introduction'
+            obj.fileName = 'Jul15201810:18:zruadurp84.js'
+// new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';;
+            obj.day = '01-node-ecosystem'
             console.log('data -->', obj);
             $.ajax({
                 type: "POST",
