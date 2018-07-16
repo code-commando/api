@@ -20,6 +20,7 @@ and then display them to the DOM to be later dealt with for the UI team.
   return superagent.get('https://api.github.com/repos/code-commando/sample-class/contents/')
     .then(arr => {
       //console.log(arr.body[0].url);
+      // console.log(arr.body[0].url);
       let day1 = arr.body[0].url;
       return superagent.get(day1)
         .then(data => {
@@ -29,8 +30,8 @@ and then display them to the DOM to be later dealt with for the UI team.
             return e.download_url;
           });
           console.log('file -->', file);
-          +          res.send(file);
-          +          res.end();
+          res.send(file);
+          res.end();
         });
     });
 
