@@ -29,38 +29,54 @@ export default class Quiz {
   static fetch(day) {
     // 1. Get a list of folders from repo. 2. Get the file contents from each quiz.json for each class before today 
     return superagent.get('https://api.github.com/repos/code-commando/sample-class/contents/')
-      .then(arr => {
-        let dayArr = JSON.parse(arr.text);
+      .then(data => {
+        let dayArr = JSON.parse(data.text);
         let urlArr = dayArr.reduce((list, classDay) => {
           let classNum = parseInt(classDay.name.split('-')[0].replace(/^0/, ''));
-          if (classNum < day) list.push(classDay.url);
+          if (classNum < day) list.push(classDay.html_url);
           return list;
         }, []);
         let requests = [];
         for (let i = (urlArr.length - 1); i >= 0; i--) {
-          console.log(urlArr[i] + '/quiz.json');
-          requests.push(superagent.get(urlArr[i] + '/quiz.json'));
+          let newUrl = urlArr[i].replace('github', 'raw.githubusercontent').replace('/blob', '') + '/quiz.json';
+          console.log(newUrl);
+          requests.push(superagent.get(newUrl));
         }
+        // https://raw.githubusercontent.com/code-commando/sample-class/master/01-node-ecosystem/quiz.json
+
+        // https://github.com/code-commando/sample-class/blob/master/01-node-ecosystem/quiz.json
         //return this
-        Promise.all(requests).then(data => {
-          data.forEach(result => {
-            // ^^ for loop not forEach
-            //create an array of ALL quizzes
-            // we may want result.body or result.text maybe JSON parse?
+        Promise.all(requests).then(responses => {
+          let quizzes = responses.map(response => response.body);
+          console.log(quizzes);
+          return quizzes;
+          // for (let i = 0; i < quizzes.length; i++) {
             
-            console.log(result);
+            
+          // }
+          
+        })
+          .catch(err => {
+            console.log(err);
           });
-        });
+          
+          // ^^ for loop not forEach
+          //create an array of ALL quizzes
+          // we may want result.body or result.text maybe JSON parse?
+            
+          
+        
       });
   }
 }
-// returns an array of arrays containing objects 01: [[{questions/answers}, [{questions/answers}], etc..]
 
+
+
+// returns an array of arrays containing objects 01: [[{questions/answers}, [{questions/answers}], etc..]
 
 //   process(){
 
 // }
-
 
 // fetchForReal(){
 //   // has same reutrn and signature as above function until fetch is finished 
@@ -69,9 +85,7 @@ export default class Quiz {
 // quizRandom(){
 //   // has method that A & J are working on 
 
-
 // }
-
 
 // /api/v1/quiz/12 
 // Expect 5 random questions from days 1 through ##-1. 
