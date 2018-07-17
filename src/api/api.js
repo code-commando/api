@@ -13,9 +13,9 @@ import randomPairs from '../middleware/pairs';
 router.get('/api/v1/:model', (req,res,next) => {
   if(req.params.model === 'roster') {
     req.model.find({})
-      .then(data => {
-        let studentName = data.map(student => student.name);
-        let code = data.map(student => student.classCode);
+      .then(students => {
+        let studentName = students.map(student => student.name);
+        let code = students.map(student => student.classCode);
         let count = studentName.length;
         return {
           count,
@@ -36,32 +36,31 @@ router.get('/api/v1/:model', (req,res,next) => {
 router.get('/api/v1/:model/random', (req, res) => {
   req.model.find({})
     .then(students => {
-      console.log({students});
-      
       let unpicked = students.filter(student => !student.picked);
 
-      let randomS = randomStudent(unpicked, req.model);
+      if(unpicked.length === 0) {
+        req.model.updateMany({picked: true}, {picked: false})
+          .then(updateResult => {
+            console.log({updateResult});
+            req.model.find({})
+              .then(students => {
+                let randomS = randomStudent(students, req.model);
+              
+                res.send(randomS);
+              });
+          });
+      }
+      else{
+        let randomS = randomStudent(unpicked, req.model);
 
-      res.send(randomS);
-
+        res.send(randomS);
+      }
     })
     .catch(err => {
       console.log(err);
     });
 });
 
-
-
-
-// router.get('/api/v1/:model/random', (req, res) => {
-//   req.model.find({})
-//     .then(students => {
-//       let studentNames = students.map(student => student.name);
-//       // console.log(students);
-//       let code = students.map(student => student.classCode);
-//       res.send(randomStudent(studentNames, code));
-//     });
-// });
 
 router.get('/api/v1/:model/pairs', (req, res) => {
   req.model.find({})
@@ -71,23 +70,6 @@ router.get('/api/v1/:model/pairs', (req, res) => {
       res.send(randomPairs(studentNames, code));
     });
 });
-
-
-// router.get('/api/v1/:model/:classCode', (req, res, next) => {
-//   if(req.params.find === 'roster'){
-//     req.model.find({})
-//       .then(students => {
-//         let studentNames = students.map(studentNames = studentNames.name);
-//         let code = students.classCode;
-//         if(code === req.params.classCode){
-//           res.send(studentNames, code);
-//         } else {
-//           res.send('No Class matches that Code');
-//         }
-//       })
-//       .catch(next);
-//   }
-// });
 
 
 // router.get('/api/v1/roster/:classCode', (req, res, next) => {

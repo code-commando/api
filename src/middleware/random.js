@@ -2,19 +2,15 @@
 
 
 function randomStudent(arr, model) {
-  for (var i = 0; i < arr.length - 1; i++) {
-    var j = i + Math.floor(Math.random() * (arr.length - i));
+  let index = Math.floor(Math.random() * (arr.length -1));
 
-    var temp = arr[j];
-    arr[j] = arr[i];
-    arr[i] = temp;
-  }
-  let pickedStudent = arr[0];
+  let pickedStudent = arr[index];
 
-
-  // pickedStudent.update(pickedStudent, {$set: {picked: true}});
-  model.findByOneAndUpdate({_id: pickedStudent._id}, {$set: {picked: true}}, {new: true});
-
+  model.findByIdAndUpdate(pickedStudent._id, {$set:{ picked: true}}, {new: true})
+    .then(data => {
+      console.log(data);
+    });
+  
   return {
     count: 1,
     results: pickedStudent.name,
