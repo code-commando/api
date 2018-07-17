@@ -32,15 +32,36 @@ router.get('/api/v1/:model', (req,res,next) => {
 });
 
 
+
 router.get('/api/v1/:model/random', (req, res) => {
   req.model.find({})
     .then(students => {
-      let studentNames = students.map(student => student.name);
-      // console.log(students);
-      let code = students.map(student => student.classCode);
-      res.send(randomStudent(studentNames, code));
+      console.log({students});
+      
+      let unpicked = students.filter(student => !student.picked);
+
+      let randomS = randomStudent(unpicked, req.model);
+
+      res.send(randomS);
+
+    })
+    .catch(err => {
+      console.log(err);
     });
 });
+
+
+
+
+// router.get('/api/v1/:model/random', (req, res) => {
+//   req.model.find({})
+//     .then(students => {
+//       let studentNames = students.map(student => student.name);
+//       // console.log(students);
+//       let code = students.map(student => student.classCode);
+//       res.send(randomStudent(studentNames, code));
+//     });
+// });
 
 router.get('/api/v1/:model/pairs', (req, res) => {
   req.model.find({})
@@ -126,4 +147,6 @@ router.put('/api/v1/:model/:id', (req, res, next) => {
 
   }
 });
+
+
 export default router;

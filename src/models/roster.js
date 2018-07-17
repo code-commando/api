@@ -9,6 +9,7 @@ const StudentSchema = mongoose.Schema({
   sortable_name: {type: String},
   short_name: {type: String},
   classCode: {type: String, required: true},
+  picked: {type: Boolean, default: false},
 });
 
 
