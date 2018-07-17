@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="./monaco/vs/editor.main.css">
+</head>
+
+<body>
+    <div>
+    <label style="font: bold;font-size: 1.25em">Theme</label>
+        <select name = "theme" style="font: bold;font-size: 1em;float: right;">
+                <option value="vs-dark">Dark</option>
+                <option value="vs-light">Light</option>
+                
+        </select>
+            </div>
+    <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
+    
+    <!-- <div id="" style="width:800px;height:600px;border:1px solid grey">
+        <form>
+            <input type="text" id="container" style="width:800px;height:600px;border:1px solid grey">
+        </form>
+        
+    </div> -->
+    <br>
+    <div>
+    <button style="height:2em;width:5em;font-weight: bold;font-size: 0.75em;" id='run' type="submit">Run</button>
+    <br>
+    <br>
+    <label><b>Result: </b></label>
+    <b><label id="result"></label></b>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script>
+        var require = {
+            paths: {
+                'vs': './monaco/vs'
+            }
+        };
+    </script>
+    <script src="./monaco/vs/loader.js"></script>
+    <script src="./monaco/vs/editor/editor.main.nls.js"></script>
+    <script src="./monaco/vs/editor/editor.main.js"></script>
+
+    <script>
+        var editor = monaco.editor.create(document.getElementById('container'), {
+            value: [].join('\n'),
+            language: 'javascript',
+            theme: 'vs-light',
+            fontSize: 15,
+            wordWrap: 'wordWrapColumn',
+	wordWrapColumn: 40,
+        });
+    </script>
+      
+    <script>
+        $('#run').on('click', function (e) {
+            e.preventDefault();
+            let data = editor.getValue();
+            let obj = {}
+            obj.code = data;
+            obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';;
+            obj.day = '01-node-ecosystem'
+            console.log('data -->', obj);
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/api/v1/code",
+                data: obj,
+                success: function (data) {
+                    console.log(data);
+                    $('#result').text(JSON.stringify(data));
+                },
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 // import cookieParser from 'cookie-parser';
 
+import replRouter from './repl/nel/router';
 import router from './api/api.js';
 import authRouter from './auth/auth.js';
 
@@ -14,7 +15,6 @@ import errorHandler from './middleware/error.js';
 import noBody from './middleware/400.js';
 
 
-
 let app = express();
 
 app.use(cors());
@@ -22,9 +22,10 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // app.use(cookieParser());
-
+app.use(replRouter);
 app.use(router);
 app.use(authRouter);
+
 
 app.use(notFound);
 app.use(noAuth);
