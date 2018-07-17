@@ -36,6 +36,7 @@ router.get('/api/v1/:model/random', (req, res) => {
   req.model.find({})
     .then(students => {
       let studentNames = students.map(student => student.name);
+      // console.log(students);
       let code = students.map(student => student.classCode);
       res.send(randomStudent(studentNames, code));
     });
@@ -49,6 +50,23 @@ router.get('/api/v1/:model/pairs', (req, res) => {
       res.send(randomPairs(studentNames, code));
     });
 });
+
+
+// router.get('/api/v1/:model/:classCode', (req, res, next) => {
+//   if(req.params.find === 'roster'){
+//     req.model.find({})
+//       .then(students => {
+//         let studentNames = students.map(studentNames = studentNames.name);
+//         let code = students.classCode;
+//         if(code === req.params.classCode){
+//           res.send(studentNames, code);
+//         } else {
+//           res.send('No Class matches that Code');
+//         }
+//       })
+//       .catch(next);
+//   }
+// });
 
 
 // router.get('/api/v1/roster/:classCode', (req, res, next) => {

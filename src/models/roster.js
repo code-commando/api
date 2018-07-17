@@ -12,7 +12,7 @@ const StudentSchema = mongoose.Schema({
 });
 
 
-// StudentSchema.pre('save', function(next) {
+// StudentSchema.pre('save', (next) => {
 //   StudentSchema.sortable_name = StudentSchema.name.split(' ').reverse().join(' ')
 //     .then(next)
 //     .catch(error => {throw error;});
