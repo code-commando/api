@@ -7,9 +7,10 @@ function randomStudent(arr, model) {
   let pickedStudent = arr[index];
 
   model.findByIdAndUpdate(pickedStudent._id, {$set:{ picked: true}}, {new: true})
-    .then(data => {
-      console.log(data);
-    });
+    .then(() => {});
+  // .then(data => {
+  //   console.log(data);
+  // });
   
   return {
     count: 1,
