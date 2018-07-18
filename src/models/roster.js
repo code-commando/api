@@ -13,19 +13,11 @@ const StudentSchema = mongoose.Schema({
 });
 
 
-// StudentSchema.pre('save', function(next) {
-//   let anna = this.name.split(' ').reverse().join();
-//   console.log('JEIOWOEFW', anna)
-//   // this.name.split(' ').reverse().join()
-//     .then(reversedName => {
-//       console.log(reversedName);
-//       this.sortable_name = reversedName;
-//       next();
-//     })
-//     .catch(error => {throw error;});
-// });
-
-
+StudentSchema.pre('save', function(next) {
+  this.sortable_name = this.name.split(' ').reverse().join(', ');
+  next()
+    .catch(error => {throw error;});
+});
 
 export default mongoose.model('classrosters', StudentSchema);
 
