@@ -19,7 +19,9 @@ export default class Quiz {
   static findOne(day) {
     return Quiz.fetch(day).then(quizzes => {
       console.log({quizzes});
-      Quiz.process(quizzes);
+      let processed = Quiz.process(quizzes);
+      Quiz.randomQuiz(processed);
+
     });
   }
   
@@ -68,10 +70,43 @@ export default class Quiz {
         singleQuiz.forEach((question) => {
           newQuizArr.push(question);
         });
+      });
+      
+      
     });
-    console.log('THE FINAL QUIZ', newQuizArr);
-    });
-}
+    return newQuizArr;
+  }
+
+  static randomQuiz(allQuestions) {
+    let randomIndex = 0;
+    let questions = [];
+    let selected = [];
+    let maxIndex = allQuestions.length;
+    if (allQuestions.length == 0) {
+      return undefined;
+    }
+    else if (allQuestions.length < 5) {
+      return allQuestions;
+    }
+    else {
+      selected.push(Math.floor((Math.random() * 2)));
+      for (let i = 0; i < 4; i++) {
+        randomIndex = Math.floor((Math.random() * maxIndex));
+        if (selected.includes(randomIndex)) {
+          i--;
+        }
+        else {
+          selected.push(randomIndex);
+        }
+      }
+    }
+    for (let i = 0; i < selected.length; i++) {
+      questions.push(allQuestions[selected[i]]);
+    }
+    console.log(questions);
+    return questions;
+  }
+
 }
 
 
