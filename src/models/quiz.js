@@ -62,14 +62,16 @@ export default class Quiz {
 
   static process(quizArr) {
     let newQuizArr = [];
-    console.log('this is what we start with', quizArr);
-    quizArr.forEach((singleQuiz) => {
-      singleQuiz.forEach((question) => {
-        newQuizArr.push(question);
-      });
-      console.log(newQuizArr);
+    // console.log('this is what we start with', quizArr);
+    quizArr.forEach((quizObj) => {
+      quizObj.forEach((singleQuiz) => {
+        singleQuiz.forEach((question) => {
+          newQuizArr.push(question);
+        });
     });
-  }
+    console.log('THE FINAL QUIZ', newQuizArr);
+    });
+}
 }
 
 
