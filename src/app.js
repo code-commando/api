@@ -14,11 +14,6 @@ import noAuth from './middleware/401.js';
 import errorHandler from './middleware/error.js';
 import noBody from './middleware/400.js';
 
-// import notFound from './middleware/404.js';
-// import noAuth from './middleware/401.js';
-// import errorHandler from './middleware/error.js';
-// import noBody from './middleware/400.js';
-
 import quizRouter from './quiz/router.js';
 
 let app = express();
