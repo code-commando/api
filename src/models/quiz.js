@@ -49,8 +49,9 @@ export default class Quiz {
         }
 
         return Promise.all(requests).then(responses => {
-          let quizzes = responses.map(response => JSON.parse(response.text));
-          // console.log(quizzes);
+          let quizzes = [];
+          quizzes.push(responses.map(response => JSON.parse(response.text)));
+          console.log('quizzes inside map', quizzes);
           return quizzes;          
         })
           .catch(err => {
@@ -61,7 +62,7 @@ export default class Quiz {
 
   static process(quizArr) {
     let newQuizArr = [];
-    console.log(quizArr);
+    console.log('this is what we start with', quizArr);
     quizArr.forEach((singleQuiz) => {
       singleQuiz.forEach((question) => {
         newQuizArr.push(question);
@@ -71,7 +72,10 @@ export default class Quiz {
   }
 }
 
+
 // quizRandom(){
 //   // has method that A & J are working on 
 
 // }
+
+
