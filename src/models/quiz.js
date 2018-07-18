@@ -21,7 +21,10 @@ export default class Quiz {
       console.log({quizzes});
       let processed = Quiz.process(quizzes);
       const questions = Quiz.randomQuiz(processed);
-      return questions;
+      return {
+        count: questions.length,
+        results: questions,
+      };
 
     });
   }
