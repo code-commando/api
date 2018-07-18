@@ -61,6 +61,8 @@ describe('api routes for roster', () => {
         return mockRequest
           .get(ROSTER_URL)
           .then(response => {
+            console.log('yyyyyyyy', response.body);
+            
             expect(response.body.results[0]).toBe('first last');
           });
       });

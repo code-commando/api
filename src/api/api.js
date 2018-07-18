@@ -14,7 +14,22 @@ import randomPairs from '../middleware/pairs';
 
 router.get('/api/v1/:model', (req,res,next) => {
   if(req.params.model === 'roster') {
-    req.model.find({classCode: req.query.classCode})
+    if(req.query.classCode){
+      req.model.find({classCode: req.query.classCode})
+        .then(students => {
+          let studentName = students.map(student => student.name);
+          let code = students.map(student => student.classCode);
+          let count = studentName.length;
+          return {
+            count,
+            results: studentName,
+            classCode: code[0],
+          };
+        })
+        .then( data => sendJSON(res,data) )
+        .catch( next );
+    }
+    else {req.model.find({})
       .then(students => {
         let studentName = students.map(student => student.name);
         let code = students.map(student => student.classCode);
@@ -27,10 +42,15 @@ router.get('/api/v1/:model', (req,res,next) => {
       })
       .then( data => sendJSON(res,data) )
       .catch( next );
+    }
+  } else {
+    req.model.find({})
+ 
+      .then( data => {
+        sendJSON(res,data); 
+      })
+      .catch( next );
   }
-  req.model.find({})
-    .then( data => sendJSON(res,data) )
-    .catch( next );
 });
 
 
@@ -69,7 +89,7 @@ router.get('/api/v1/:model/pairs', (req, res) => {
     .then(students => {
       let studentNames = students.map(student => student.name);
       let code = students.map(student => student.classCode);
-      res.send(randomPairs(studentNames, code));
+      res.send(randomPairs(studentNames, code[0]));
     });
 });
 
