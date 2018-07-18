@@ -72,6 +72,7 @@ export default class Quiz {
     console.log('THE FINAL QUIZ', newQuizArr);
     });
 }
+}
 
 
 // quizRandom(){
