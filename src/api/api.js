@@ -14,7 +14,7 @@ import randomPairs from '../middleware/pairs';
 
 router.get('/api/v1/:model', (req,res,next) => {
   if(req.params.model === 'roster') {
-    req.model.find({})
+    req.model.find({classCode: req.query.classCode})
       .then(students => {
         let studentName = students.map(student => student.name);
         let code = students.map(student => student.classCode);
@@ -22,7 +22,7 @@ router.get('/api/v1/:model', (req,res,next) => {
         return {
           count,
           results: studentName,
-          classCode: code,
+          classCode: code[0],
         };
       })
       .then( data => sendJSON(res,data) )

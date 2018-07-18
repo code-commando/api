@@ -30,7 +30,7 @@ function randomPairs(classArr, code) {
   return {
     count,
     results:  newArr,
-    classCode: code,
+    classCode: code[0],
   };
 }
 
