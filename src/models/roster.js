@@ -19,5 +19,6 @@ StudentSchema.pre('save', function(next) {
     .catch(error => {throw error;});
 });
 
+
 export default mongoose.model('classrosters', StudentSchema);
 
