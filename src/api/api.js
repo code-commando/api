@@ -3,15 +3,96 @@
 import express from 'express';
 const router = express.Router();
 
-import modelFinder from '../middleware/modelHelper.js';
+
+import modelFinder from '../middleware/modelHelper';
+
 router.param('model', modelFinder);
+
+import randomStudent from '../middleware/random';
+import randomPairs from '../middleware/pairs';
 
 
 router.get('/api/v1/:model', (req,res,next) => {
-  req.model.find({})
-    .then( data => sendJSON(res,data) )
-    .catch( next );
+  if(req.params.model === 'roster') {
+    if(req.query.classCode){
+      req.model.find({classCode: req.query.classCode})
+        .then(students => {
+          let studentName = students.map(student => student.name);
+          let code = students.map(student => student.classCode);
+          let count = studentName.length;
+          return {
+            count,
+            results: studentName,
+            classCode: code[0],
+          };
+        })
+        .then( data => sendJSON(res,data) )
+        .catch( next );
+    }
+    else {req.model.find({})
+      .then(students => {
+        let studentName = students.map(student => student.name);
+        let code = students.map(student => student.classCode);
+        let count = studentName.length;
+        return {
+          count,
+          results: studentName,
+          classCode: code[0],
+        };
+      })
+      .then( data => sendJSON(res,data) )
+      .catch( next );
+    }
+  } else {
+    req.model.find({})
+ 
+      .then( data => {
+        sendJSON(res,data); 
+      })
+      .catch( next );
+  }
 });
+
+
+
+router.get('/api/v1/:model/random', (req, res) => {
+  req.model.find({})
+    .then(students => {
+      let unpicked = students.filter(student => !student.picked);
+
+      if(unpicked.length === 0) {
+        req.model.updateMany({picked: true}, {picked: false})
+          .then(updateResult => {
+            console.log({updateResult});
+            req.model.find({})
+              .then(students => {
+                let randomS = randomStudent(students, req.model);
+              
+                res.send(randomS);
+              });
+          });
+      }
+      else{
+        let randomS = randomStudent(unpicked, req.model);
+
+        res.send(randomS);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+
+router.get('/api/v1/:model/pairs', (req, res) => {
+  req.model.find({})
+    .then(students => {
+      let studentNames = students.map(student => student.name);
+      let code = students.map(student => student.classCode);
+      res.send(randomPairs(studentNames, code[0]));
+    });
+});
+
 
 router.get('/api/v1/:model/:id', (req,res,next) => {
   req.model.findOne({_id:req.params.id})
@@ -62,5 +143,6 @@ router.put('/api/v1/:model/:id', (req, res, next) => {
       .catch(next);
   }
 });
+
 
 export default router;
