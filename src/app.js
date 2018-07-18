@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 // import cookieParser from 'cookie-parser';
 
-import replRouter from './repl/nel/router';
+import codeRunnerRouter from './codeRunner/nel/router';
 import router from './api/api.js';
 import authRouter from './auth/auth.js';
 
@@ -22,7 +22,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // app.use(cookieParser());
-app.use(replRouter);
+app.use(codeRunnerRouter);
 app.use(router);
 app.use(authRouter);
 

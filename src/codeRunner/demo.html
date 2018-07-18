@@ -50,7 +50,7 @@
     <script>
         var editor = monaco.editor.create(document.getElementById('container'), {
             value: [].join('\n'),
-            language: 'javascript',
+            language: 'python',
             theme: 'vs-light',
             fontSize: 15,
             wordWrap: 'wordWrapColumn',
@@ -64,8 +64,11 @@
             let data = editor.getValue();
             let obj = {}
             obj.code = data;
-            obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';;
+            // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';
+            //'Jul16201820:07:z3i0f35uzm.js';
             obj.day = '01-node-ecosystem'
+            obj.language = 'python';
+            // obj.sha = '563cec42a9bdbee9d7c0a2428486dcbe094f2f51'
             console.log('data -->', obj);
             $.ajax({
                 type: "POST",
