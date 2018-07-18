@@ -5,8 +5,9 @@ const models = requireAll('../models');
 
 
 export default (req,res,next) => {
-  let model = req.params.model;
 
+  let model = req.params.model;
+  console.log(model);
   if(model && models[model] && models[model].default ) {
     req.model = models[model].default;
     next();

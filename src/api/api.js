@@ -3,7 +3,9 @@
 import express from 'express';
 const router = express.Router();
 
+
 import modelFinder from '../middleware/modelHelper';
+
 router.param('model', modelFinder);
 
 import randomStudent from '../middleware/random';
@@ -119,7 +121,6 @@ router.put('/api/v1/:model/:id', (req, res, next) => {
         sendJSON(res, data);
       })
       .catch(next);
-
   }
 });
 
