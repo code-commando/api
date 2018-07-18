@@ -39,30 +39,30 @@ describe('quiz module', () => {
 
 function checkResponse(response, dayNum) {
 
-  expect(response.body.count).toBe(dayNum - 1);
-  const quizzes = response.body.results;
-  expect(quizzes.length).toBe(dayNum - 1);
-  checkQuizzes(quizzes);
-}
+  let expectedCount = 5;
 
-function checkQuizzes(quizzes) {
-
-  
-  for (let quiz of quizzes) {
-    expect(quiz.length).toBe(3); // at the moment
-    for (let quizItem of quiz) {
-      expect(quizItem.question).toBeDefined();
-      expect(quizItem.correctAnswer).toBeDefined();
-      if (quizItem.answers) {
-        expect(quizItem.answers.includes(quizItem.correctAnswer));
-      }
-    }
+  if(dayNum < 3) {
+    expectedCount = 3;
   }
 
-  // Need tests for below too
-  // we want 5 items when quiz count > 1
-  // otherwise 3
+  expect(response.body.count).toBe(expectedCount);
+
+  const quiz = response.body.results;
+  
+  expect(quiz.length).toBe(expectedCount);
+  
+  for (let quizItem of quiz) {
+    expect(quizItem.question).toBeDefined();
+    expect(quizItem.correctAnswer).toBeDefined();
+    if (quizItem.answers) {
+      expect(quizItem.answers.includes(quizItem.correctAnswer));
+    }
+  }
+  
+
+  // TODO: Need tests for 
   // at least 1 should be from the most recent day E.g. asking on Friday gets at least one from Thursday
+  // but cannot do that with just only the data in response
 
 
 }
