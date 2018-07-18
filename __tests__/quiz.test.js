@@ -11,7 +11,7 @@ const API_STUB = '/api/v1';
 describe('quiz module', () => {
 
   /*
-    Reference https://github.com/code-commando/sample-class/blob/master/01-node-ecosystem/quiz.json
+    For visual reference https://github.com/code-commando/sample-class/blob/master/01-node-ecosystem/quiz.json
     */
 
   it('should get day 2 content', () => {
@@ -47,8 +47,9 @@ function checkResponse(response, dayNum) {
 
 function checkQuizzes(quizzes) {
 
+  
   for (let quiz of quizzes) {
-    expect(quiz.length).toBe(3);
+    expect(quiz.length).toBe(3); // at the moment
     for (let quizItem of quiz) {
       expect(quizItem.question).toBeDefined();
       expect(quizItem.correctAnswer).toBeDefined();
@@ -57,5 +58,11 @@ function checkQuizzes(quizzes) {
       }
     }
   }
+
+  // Need tests for below too
+  // we want 5 items when quiz count > 1
+  // otherwise 3
+  // at least 1 should be from the most recent day E.g. asking on Friday gets at least one from Thursday
+
 
 }
