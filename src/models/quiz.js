@@ -24,11 +24,11 @@ export default class Quiz {
   }
   
  
-    // quizRandom();
-    // fetch, process, magic
-    // method to fetch that returns array of objects
-    // method to process that data that returns an array
-    // method to sort, randomize, return
+  // quizRandom();
+  // fetch, process, magic
+  // method to fetch that returns array of objects
+  // method to process that data that returns an array
+  // method to sort, randomize, return
   
 
   static fetch(day) {

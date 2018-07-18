@@ -29,7 +29,7 @@ function randomQuiz () {
   for (let i = 0; i < selected.length; i++) {
     questions.push(allQuizzes[selected[i]]);
   }
-  console.log(questions);    
+  console.log(questions);
+  return questions;    
 }
 
-randomQuiz();
