@@ -72,13 +72,6 @@ router.get('/api/v1/:model/pairs', (req, res) => {
 });
 
 
-// router.get('/api/v1/roster/:classCode', (req, res, next) => {
-//   req.model.find({classCode: req.params.classCode})
-//     .then( data => sendJSON(res,data) )
-//     .catch( next );
-// });
-
-
 router.get('/api/v1/:model/:id', (req,res,next) => {
   req.model.findOne({_id:req.params.id})
     .then( data => sendJSON(res,data) )
