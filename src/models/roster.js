@@ -15,6 +15,9 @@ const StudentSchema = mongoose.Schema({
 
 StudentSchema.pre('save', function(next) {
   this.sortable_name = this.name.split(' ').reverse().join(', ');
+  let firstName = [];
+  firstName.push(this.name.split(' '));
+  this.short_name = firstName[0][0];
   next()
     .catch(error => {throw error;});
 });
