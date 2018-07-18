@@ -20,7 +20,8 @@ export default class Quiz {
     return Quiz.fetch(day).then(quizzes => {
       console.log({quizzes});
       let processed = Quiz.process(quizzes);
-      Quiz.randomQuiz(processed);
+      const questions = Quiz.randomQuiz(processed);
+      return questions;
 
     });
   }
