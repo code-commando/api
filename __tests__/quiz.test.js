@@ -10,7 +10,6 @@ const mockRequest = supertest(server);
 const API_STUB = '/api/v1';
 
 
-
 describe('quiz module', () => {
 
   /*
@@ -18,9 +17,7 @@ describe('quiz module', () => {
     */
 
   it('should get day 2 content', () => {
-
     const dayNum = 2;
-
     return mockRequest
       .get(`${API_STUB}/quiz/${dayNum}`)
       .then(response => {
@@ -44,16 +41,15 @@ function checkResponse(response, dayNum) {
 
   let expectedCount = 5;
 
-  if(dayNum < 3) {
+  if (dayNum < 3) {
     expectedCount = 3;
   }
-
   expect(response.body.count).toBe(expectedCount);
 
   const quiz = response.body.results;
-  
+
   expect(quiz.length).toBe(expectedCount);
-  
+
   for (let quizItem of quiz) {
     expect(quizItem.question).toBeDefined();
     expect(quizItem.correctAnswer).toBeDefined();
@@ -61,8 +57,6 @@ function checkResponse(response, dayNum) {
       expect(quizItem.answers.includes(quizItem.correctAnswer));
     }
   }
-
-  
 }
 
 describe('quiz randomizer', () => {
@@ -87,7 +81,3 @@ describe('quiz randomizer', () => {
   });
 
 });
-
-// TODO: Need tests for 
-// at least 1 should be from the most recent day E.g. asking on Friday gets at least one from Thursday
-// but cannot do that with just only the data in response
