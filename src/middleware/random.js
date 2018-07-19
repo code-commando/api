@@ -13,7 +13,7 @@ function randomStudent(arr, model) {
   
   return {
     count: 1,
-    results: pickedStudent.name,
+    results: [pickedStudent.name],
     classCode: pickedStudent.classCode,
   };
 }
