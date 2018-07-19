@@ -11,6 +11,12 @@ schemes:
 paths:
   /roster:
     get:
+      parameters:
+        - in: query
+          name: classCode
+          schema:
+            type: string
+            required: true
       description: Get all students
       responses:
         200:
@@ -32,6 +38,22 @@ paths:
           description: Returned the created student
           schema:
             $ref: '#/definitions/Student'
+  /roster/random:
+    get:
+      description: Get one random student
+      responses:
+        200:
+          description: Returned one random student
+          schema:
+            $ref: '#/definitions/getRandom'
+  /roster/pairs:
+    get:
+      description: Get random pairs
+      responses:
+        200:
+          description: Returned random pairs
+          schema:
+            $ref: '#/definitions/getPairs'            
   /quiz/{classNum}:
     get:
       description: Get all quizzes
@@ -59,6 +81,28 @@ definitions:
       classCode:
         type: string
   getStudents:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getRandom:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getPairs:
     type: object
     properties:
       classCode:
