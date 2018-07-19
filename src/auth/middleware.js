@@ -10,6 +10,9 @@ export default (req, res, next) => {
           next(401);
         }
         else {
+          console.log('in middleware', user);
+          req.user = user._id;
+          req.cookies.jwt = user.jwt;
           next();
         }
       })
@@ -19,24 +22,22 @@ export default (req, res, next) => {
 
   try {
 
-  if(req.cookies) {
-    console.log(req.cookies.jwt);
-    return authorize(req.cookies.jwt);
-  }
+    if (req.cookies.jwt) {
+      return authorize(req.cookies.jwt);
+    }
     let authHeader = req.headers.authorization;
 
-    if(!authHeader) {
+    if (!authHeader) {
       return next(401);
     }
 
-    else if(authHeader.match(/bearer/i)) {
+    else if (authHeader.match(/bearer/i)) {
       let token = authHeader.replace(/bearer\s+/i, '');
-      console.log(token);
 
       authorize(token);
     }
   }
-  catch(e) {
+  catch (e) {
     next(e);
   }
 };
