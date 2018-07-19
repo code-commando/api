@@ -19,6 +19,10 @@ export default (req, res, next) => {
 
   try {
 
+  if(req.cookies) {
+    console.log(req.cookies.jwt);
+    return authorize(req.cookies.jwt);
+  }
     let authHeader = req.headers.authorization;
 
     if(!authHeader) {
@@ -27,6 +31,8 @@ export default (req, res, next) => {
 
     else if(authHeader.match(/bearer/i)) {
       let token = authHeader.replace(/bearer\s+/i, '');
+      console.log(token);
+
       authorize(token);
     }
   }

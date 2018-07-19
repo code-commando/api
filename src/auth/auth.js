@@ -20,8 +20,10 @@ authRouter.get('/', (req,res, next) => {
 authRouter.get('/oauth', (req, res, next) => {
 
   oauth.authorize(req)
-    .then( user => {
-      res.send(user);
+    .then( token => {
+      res.cookie('jwt', token);
+      res.send(token);
+      // res.redirect('/');
     })
     .catch(next);
 
