@@ -4,7 +4,7 @@ info:
   description: N/A
   version: "1"
   title: Core API
-host: localhost:3131
+host: localhost:3000
 basePath: /api/v1
 schemes:
 - http
@@ -32,6 +32,20 @@ paths:
           description: Returned the created student
           schema:
             $ref: '#/definitions/Student'
+  /quiz/{classNum}:
+    get:
+      description: Get all quizzes
+      parameters:
+        - name: classNum
+          in: path
+          type: string
+          description: class number
+          required: true
+      responses:
+        200:
+          description: Returned a list of quiz questions
+          schema:
+            $ref: '#/definitions/getQuizzes'
 
 definitions:
   Student:
@@ -49,6 +63,15 @@ definitions:
     properties:
       classCode:
         type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getQuizzes:
+    type: object
+    properties:
       count:
         type: number
       results:
