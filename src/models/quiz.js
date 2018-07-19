@@ -5,7 +5,7 @@ import superagent from 'superagent';
 export default class Quiz {
   static findOne(day) {
     return Quiz.fetch(day).then(quizzes => {
-      console.log({quizzes});
+      console.log({ quizzes });
       let processed = Quiz.process(quizzes);
       const questions = Quiz.randomQuiz(processed);
       return {
@@ -15,7 +15,7 @@ export default class Quiz {
 
     });
   }
-  
+
   static fetch(day) {
     return superagent.get('https://api.github.com/repos/code-commando/sample-class/contents/')
       .then(data => {
@@ -35,7 +35,7 @@ export default class Quiz {
           let quizzes = [];
           quizzes.push(responses.map(response => JSON.parse(response.text)));
           console.log('quizzes inside map', quizzes);
-          return quizzes;          
+          return quizzes;
         })
           .catch(err => {
             console.log(err);
@@ -51,8 +51,6 @@ export default class Quiz {
           newQuizArr.push(question);
         });
       });
-      
-      
     });
     return newQuizArr;
   }
@@ -86,5 +84,4 @@ export default class Quiz {
     console.log(questions);
     return questions;
   }
-
 }
