@@ -1,0 +1,124 @@
+---
+swagger: "2.0"
+info:
+  description: N/A
+  version: "1"
+  title: Core API
+host: localhost:3000
+basePath: /api/v1
+schemes:
+- http
+paths:
+  /roster:
+    get:
+      parameters:
+        - in: query
+          name: classCode
+          schema:
+            type: string
+            required: true
+      description: Get all students
+      responses:
+        200:
+          description: Returned a list of students
+          schema:
+            $ref: '#/definitions/getStudents'
+    post:
+      description: Create a new student for a given model
+      consumes:
+      - application/json
+      parameters:
+      - name: record
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/Student" 
+      responses:
+        200:
+          description: Returned the created student
+          schema:
+            $ref: '#/definitions/Student'
+  /roster/random:
+    get:
+      description: Get one random student
+      responses:
+        200:
+          description: Returned one random student
+          schema:
+            $ref: '#/definitions/getRandom'
+  /roster/pairs:
+    get:
+      description: Get random pairs
+      responses:
+        200:
+          description: Returned random pairs
+          schema:
+            $ref: '#/definitions/getPairs'            
+  /quiz/{classNum}:
+    get:
+      description: Get all quizzes
+      parameters:
+        - name: classNum
+          in: path
+          type: string
+          description: class number
+          required: true
+      responses:
+        200:
+          description: Returned a list of quiz questions
+          schema:
+            $ref: '#/definitions/getQuizzes'
+
+definitions:
+  Student:
+    type: object
+    required:
+      - name
+      - classCode
+    properties:
+      name:
+        type: string
+      classCode:
+        type: string
+  getStudents:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getRandom:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getPairs:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getQuizzes:
+    type: object
+    properties:
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
