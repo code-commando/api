@@ -3,6 +3,7 @@ const router = express.Router();
 import nel from 'nel';
 import superagent from 'superagent';
 import compileRun from 'compile-run';
+// require('../../../nock/code.js');
 // import fs from 'fs';
 
 /*
@@ -12,17 +13,21 @@ let solution = {};
 let onStdoutArray = [];
 let onStderrArray = [];
 var fileName;
-router.get('/api/v1/code', (req, res) => {
+let classRepo;
+router.get('/api/v1/code/:id', (req, res) => {
   /*
 Send a superagent request to get the demo file(s) 
 for that day (that has been previously aquired by the electron login),
 and then display them to the DOM to be later dealt with for the UI team.
 */
-  return superagent.get('https://api.github.com/repos/code-commando/sample-class/contents/')
+  
+  classRepo = req.body.repo || 'sample-class';
+  let dayId = req.params.id;
+  return superagent.get(`https://api.github.com/repos/code-commando/${classRepo}/contents/`)
     .then(arr => {
-      //console.log(arr.body[0].url);
-      let day1 = arr.body[0].url;
-      return superagent.get(day1)
+      console.log(arr.body[dayId-1].url);
+      let day = arr.body[dayId-1].url;
+      return superagent.get(day)
         .then(data => {
           let filtered = data.body.filter((e) => e.name.split('.')[1] === 'js');
           //console.log('filtered --> ', filtered);
@@ -78,12 +83,12 @@ router.post('/api/v1/code', (req, res) => {
   /*
   change following repo in future depending on github repo
   */
-  let repo = 'sample-class';
+
   /**
    * Build github file object
    */
   let githubObject = {
-    'message': 'commit message',
+    'message': 'updated from code commando code runner',
     'committer': {
       'name': 'MR',
       'email': 'madhu.rebbana@gmail.com',
@@ -96,7 +101,7 @@ router.post('/api/v1/code', (req, res) => {
    * 'POST' a new file to github requires just the SHA of Repo that you will be posting to
    * 'PUT' request is to update existing file and request body should have SHA specific to the file that you are trying to update
    */ 
-  superagent.put(`https://api.github.com/repos/code-commando/${repo}/contents/${day}/${fileName}`)
+  superagent.put(`https://api.github.com/repos/code-commando/${classRepo}/contents/${day}/${fileName}`)
     .set('Authorization', `Basic bXJlYmI6YW1tdTIzMDg=`)
     .send(githubObject)
     .then(response=>console.log(response.text))
