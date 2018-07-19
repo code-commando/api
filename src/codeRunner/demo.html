@@ -20,7 +20,11 @@
         <div style="width:10%;height:40%;float: right;">
                 <textarea readonly id="result" name="output" style="float: right;background-color: black;color: white" rows="46" cols="66">Console Output</textarea>
             </div>
-    <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
+    <button style="height:2em;width:5em;font-weight: bold;font-size: 0.75em;" id='load'>Load</button>
+    <div id="link" style="width:800px;height:60px;border:1px solid grey;display:none"></div>
+
+
+    <div id="container" style="width:800px;height:600px;border:1px solid grey;"></div>
    
     <br>
     
@@ -39,23 +43,62 @@
             }
         };
     </script>
+     <script>
+        // $('#load').on('click', function (e) {
+        //     e.preventDefault();
+        //     $.ajax({
+        //         type: "GET",
+        //         url:"http://localhost:3000/api/v1/code/1",
+        //         success: function (data) {
+                   
+        //         // data = JSON.stringify(data)
+        //         console.log(data[0]);
+        //             // $('#result').text(data);
+        //     }
+                  
+            
+            // });
+            // let data = editor.getValue();
+            // let obj = {}
+            // obj.code = data;
+            // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';
+            // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';
+            //'Jul16201820:07:z3i0f35uzm.js';
+            // obj.day = '01-node-ecosystem'
+            // obj.language = 'javascript';
+            
+            // obj.sha = '563cec42a9bdbee9d7c0a2428486dcbe094f2f51'
+            // console.log('data -->', obj);
+           
+        // });
+    </script>
     <script src="./monaco/vs/loader.js"></script>
     <script src="./monaco/vs/editor/editor.main.nls.js"></script>
     <script src="./monaco/vs/editor/editor.main.js"></script>
     
     <script>
+           $('#load').on('click', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "GET",
+                url:"http://localhost:3000/api/v1/code/1",
+                success: function (data) {
+                   
+                // data = JSON.stringify(data)
+                console.log(data[0]);
+                    $('#link').show().append(`<a href="${data[0]}">link</a>`);
+          
         var editor = monaco.editor.create(document.getElementById('container'), {
-            value: [`let sum = function(a,b){
-  return a+b;
-};
-sum(2,3);
-console.log('test');`].join('\n'),
+            value: [`${data[0]}`].join('\n'),
             language: 'java',
-            theme: 'vs-light',
+            theme: 'vs-dark',
             fontSize: 15,
             wordWrap: 'wordWrapColumn',
 	wordWrapColumn: 40,
         });
+    },
+}
+            )})
     </script>
       
     <script>

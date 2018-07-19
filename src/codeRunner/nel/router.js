@@ -26,11 +26,14 @@ for that day (that has been previously aquired by the electron login),
 and then display them to the DOM to be later dealt with for the UI team.
 */
   
-  classRepo = req.body.repo || 'sample-class';
+  // classRepo = req.body.repo || 'sample-class';
+  classRepo = 'sample-class';
+  
   let dayId = req.params.id;
   return superagent.get(`https://api.github.com/repos/code-commando/${classRepo}/contents/`)
     .then(arr => {
-      console.log(arr.body[dayId-1].url);
+      
+      // console.log(arr.body[dayId-1].url);
       let day = arr.body[dayId-1].url;
       return superagent.get(day)
         .then(data => {
@@ -52,7 +55,7 @@ and then display them to the DOM to be later dealt with for the UI team.
  * POST or PUT request from front end to execute the given code and save data on github class repo
  */
 router.post('/api/v1/code', (req, res) => {
-
+  console.log('class repo -->', classRepo);
   let code = req.body.code;
   
   //Change SHA of Github REPO as needed or pass it from request
@@ -113,8 +116,8 @@ router.post('/api/v1/code', (req, res) => {
   superagent.put(`https://api.github.com/repos/code-commando/${classRepo}/contents/${day}/${fileName}`)
     .set('Authorization', `Basic bXJlYmI6YW1tdTIzMDg=`)
     .send(githubObject)
-    .then(response=>console.log(response.text))
-    .catch(err=>console.log('error',err));
+    // .then(response=>console.log(response.text))
+    // .catch(err=>console.log('error',err));
   /*
     NEL package work starts here. Compile & execute the code and return response to client
   */
@@ -169,16 +172,16 @@ router.post('/api/v1/code', (req, res) => {
       if(!stderr){
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
-          console.log('Successfully removed the code dir');
+          // console.log('Successfully removed the code dir');
           
         });
         res.send(stdout);
       }
       else{
-        console.log(err);
+        // console.log(err);
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
-          console.log('Successfully removed the code dir');
+          // console.log('Successfully removed the code dir');
         });
         res.send(stderr);
       }
@@ -190,16 +193,16 @@ router.post('/api/v1/code', (req, res) => {
       if(!stderr){
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
-          console.log('Successfully removed the code dir');
+          // console.log('Successfully removed the code dir');
         });
         res.send(stdout);
       }
       else{
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
-          console.log('Successfully removed the code dir');
+          // console.log('Successfully removed the code dir');
         });
-        console.log(err);
+        // console.log(err);
         res.send(stderr);
       }
     });
