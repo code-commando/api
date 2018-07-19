@@ -34,7 +34,6 @@ router.get('/api/v1/:model', (req,res,next) => {
     }
   } else {
     req.model.find({})
- 
       .then( data => {
         sendJSON(res,data); 
       })
@@ -66,7 +65,6 @@ router.get('/api/v1/:model/random', (req, res) => {
           res.send(randomS);
         }
       })
-    
       .catch(err => {
         console.log(err);
       });
@@ -86,7 +84,6 @@ router.get('/api/v1/:model/pairs', (req, res) => {
         res.send(randomPairs(studentNames, code[0]));
       })
       .catch(err => {
-        res.send('MUST USE CLASS CODE');
         console.log(err);
       });
   }
