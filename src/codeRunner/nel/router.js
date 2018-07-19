@@ -4,7 +4,7 @@ import nel from 'nel';
 import superagent from 'superagent';
 import compileRun from 'compile-run';
 // require('../../../nock/code.js');
-// import fs from 'fs';
+import fs from 'fs-extra';
 
 /*
 Declare nel package solution object and stdOut and stdErr arrays
@@ -13,7 +13,12 @@ let solution = {};
 let onStdoutArray = [];
 let onStderrArray = [];
 var fileName;
+/*
+  change following repo in future depending on github repo
+ */
 let classRepo;
+let fileExtension;
+let dirPath = `${__dirname}/../../../code`;
 router.get('/api/v1/code/:id', (req, res) => {
   /*
 Send a superagent request to get the demo file(s) 
@@ -47,21 +52,28 @@ and then display them to the DOM to be later dealt with for the UI team.
  * POST or PUT request from front end to execute the given code and save data on github class repo
  */
 router.post('/api/v1/code', (req, res) => {
+
   let code = req.body.code;
+  
   //Change SHA of Github REPO as needed or pass it from request
   let shaRepo = '89194f6b0b79584a48e0e3bcd5ee01dafabd128c';
   let sha = req.body.sha || shaRepo;
+
   if(req.body.language === 'javascript'){
-    fileName = req.body.fileName || 
-  new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';}
+    fileExtension = '.js';
+  }
   else if(req.body.language === 'python'){
-    fileName = req.body.fileName || 
-  new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';}
+    fileExtension = '.py';
+  }
+  else if(req.body.language === 'java'){
+    fileExtension = '.java';
+  }
+
+  fileName = req.body.fileName || 
+  new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+`${fileExtension}`;
+  
   //get day information from original electron request after login and append day to github post request
   let day = req.body.day;
-  if ( ! fileName ) { 
-    return('No fileName Specified'); 
-  }
   /**
    * Following code is written if incase the code file is heavy and needs to be copied to local folder first and then stream to github. Can be used in future or scrap if no future scope is seen
    * 
@@ -80,12 +92,9 @@ router.post('/api/v1/code', (req, res) => {
   let encodedBuffer = new Buffer(code);
   let base64Encoded = encodedBuffer.toString('base64');
 
-  /*
-  change following repo in future depending on github repo
-  */
-
   /**
    * Build github file object
+   * Change committer details
    */
   let githubObject = {
     'message': 'updated from code commando code runner',
@@ -110,8 +119,7 @@ router.post('/api/v1/code', (req, res) => {
     NEL package work starts here. Compile & execute the code and return response to client
   */
   if(req.body.language === 'javascript'){
-    let session = new nel.Session();
-    solution.input = code;
+    var session = new nel.Session();
     session.execute(code, {
       onSuccess: (output) => {
         solution.return = output.mime['text/plain'];
@@ -121,28 +129,78 @@ router.post('/api/v1/code', (req, res) => {
       },
       onStdout: (output) => {
         onStdoutArray.push(output);
-        solution['console.log'] = onStdoutArray;
+        solution.log = onStdoutArray;
       },
       onStderr: (output) => {
         onStderrArray.push(output);
         solution['console.error'] = onStderrArray;
       },
       afterRun: () => {
-        res.send(solution);
+        // session.complete(code,5);
+        onStdoutArray = [];
+        let outputResult = {};
+        if(solution.error){
+          outputResult.error = solution.error;
+          solution.error = null;
+          res.send(outputResult.error);
+        }
+        else if(solution.log&& !solution.return){
+          outputResult.log=solution.log ;
+          solution.log = null;
+          res.send(outputResult);
+        }
+        else if(solution.log&& solution.return){
+          outputResult.log=solution.log ;
+          outputResult.return = solution.return;
+          solution.log = null;
+          res.send(outputResult);
+        }
+        else if(!solution.log&& solution.return){
+          outputResult.return = solution.return;
+          res.send(outputResult.return);
+        }
+
       },
     });
   }
   else if(req.body.language === 'python'){
     let input = null;
     compileRun.runPython(code, input, function (stdout, stderr, err) {
-      if(!err){
-        console.log(stdout);
-        console.log(stderr);
+      if(!stderr){
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+          
+        });
         res.send(stdout);
       }
       else{
         console.log(err);
-        res.send(err);
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+        });
+        res.send(stderr);
+      }
+    });
+  }
+  else if(req.body.language === 'java'){
+    let input = null;
+    compileRun.runJava(code, input, function (stdout, stderr, err) {
+      if(!stderr){
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+        });
+        res.send(stdout);
+      }
+      else{
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+        });
+        console.log(err);
+        res.send(stderr);
       }
     });
   }
