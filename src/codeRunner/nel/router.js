@@ -42,7 +42,12 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
                 let filtered = data.body.filter((e) => e.name.split('.')[1] === 'js');
                 //console.log('filtered --> ', filtered);
                 let file = filtered.map((e) => {
-                  return (e.download_url + ', file:' + e.name + ', sha: ' + e.sha);
+                  // return (e.download_url + ', file:' + e.name + ', sha: ' + e.sha);
+                  return {
+                    link: e.download_url,
+                    file: e.name,
+                    sha: e.sha,
+                  };
                 });
                 //console.log('file -->', file);
                 res.send(file);
