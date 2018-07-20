@@ -77,8 +77,8 @@ console.log('test');`].join('\n'),
                 headers: {'Authorization': `Bearer ${token}`},
                 data: obj,
                 success: function (data) {
-                    if(obj.language==='javascript'){
-                data = JSON.stringify(data)
+                    if(data.error){
+                data = JSON.stringify(data.error)
             }
                     console.log(data);
                     $('#result').text(data);
