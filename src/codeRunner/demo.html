@@ -44,33 +44,33 @@
         };
     </script>
      <script>
-        // $('#load').on('click', function (e) {
-        //     e.preventDefault();
-        //     $.ajax({
-        //         type: "GET",
-        //         url:"http://localhost:3000/api/v1/code/1",
-        //         success: function (data) {
+        $('#load').on('click', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "GET",
+                url:"http://localhost:3000/api/v1/code/1",
+                success: function (data) {
                    
-        //         // data = JSON.stringify(data)
-        //         console.log(data[0]);
-        //             // $('#result').text(data);
-        //     }
+                // data = JSON.stringify(data)
+                console.log(data[0]);
+                    // $('#result').text(data);
+            }
                   
             
-            // });
-            // let data = editor.getValue();
-            // let obj = {}
-            // obj.code = data;
-            // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';
-            // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';
-            //'Jul16201820:07:z3i0f35uzm.js';
-            // obj.day = '01-node-ecosystem'
-            // obj.language = 'javascript';
+            });
+            let data = editor.getValue();
+            let obj = {}
+            obj.code = data;
+            obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';
+            obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';
+            'Jul16201820:07:z3i0f35uzm.js';
+            obj.day = '01-node-ecosystem'
+            obj.language = 'javascript';
             
-            // obj.sha = '563cec42a9bdbee9d7c0a2428486dcbe094f2f51'
-            // console.log('data -->', obj);
+            obj.sha = '563cec42a9bdbee9d7c0a2428486dcbe094f2f51'
+            console.log('data -->', obj);
            
-        // });
+        });
     </script>
     <script src="./monaco/vs/loader.js"></script>
     <script src="./monaco/vs/editor/editor.main.nls.js"></script>
@@ -110,14 +110,14 @@
             // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';
             // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';
             //'Jul16201820:07:z3i0f35uzm.js';
-            obj.day = '01-node-ecosystem'
+            obj.day = e.
             obj.language = 'javascript';
             
             // obj.sha = '563cec42a9bdbee9d7c0a2428486dcbe094f2f51'
             console.log('data -->', obj);
             $.ajax({
                 type: "POST",
-                url:"http://localhost:3000/api/v1/code",
+                url:"http://localhost:3000/api/v1/code/:id",
                 data: obj,
                 success: function (data) {
                     if(obj.language==='javascript'){
