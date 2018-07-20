@@ -171,6 +171,37 @@ paths:
           description: updates class
           schema:
             type: string
+  /code/{id}:
+    get:
+      description: grabs code
+      parameters: 
+        - name: id
+          in: path 
+          type: string
+          description: code id 
+          required: true
+      responses: 
+        200:
+          description: Return code 
+          schema:
+            $ref: '#/definitions/getCode'
+  /code:
+    post: 
+      description: post code
+      consumes: 
+      - application/json
+      parameters: 
+        - name: record
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/postCode'
+      responses: 
+        200: 
+          description: post ok
+          schema: 
+            $ref: '#/definitions/postCode'
+          
 definitions:
   Student:
     type: object
@@ -238,3 +269,24 @@ definitions:
         type: string
       githubRepo:
         type: string
+  getCode: 
+     type: array
+     items: 
+        type: string
+  postCode:
+      type: object
+      required: 
+        - code
+        - language
+        - day
+      properties:
+        code:
+          type: string
+        language: 
+          type: string
+        day: 
+          type: string
+      
+      
+      
+        
