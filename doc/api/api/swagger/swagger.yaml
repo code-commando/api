@@ -14,9 +14,9 @@ paths:
       parameters:
         - in: query
           name: classCode
-          schema:
-            type: string
-            required: true
+          type: string
+          required: true
+          description: classCode
       description: Get all students
       responses:
         200:
@@ -40,6 +40,12 @@ paths:
             $ref: '#/definitions/Student'
   /roster/random:
     get:
+      parameters:
+        - in: query
+          name: classCode
+          type: string
+          required: true
+          description: classCode
       description: Get one random student
       responses:
         200:
@@ -48,12 +54,52 @@ paths:
             $ref: '#/definitions/getRandom'
   /roster/pairs:
     get:
+      parameters:
+        - in: query
+          name: classCode
+          type: string
+          required: true
+          description: classCode
       description: Get random pairs
       responses:
         200:
           description: Returned random pairs
           schema:
-            $ref: '#/definitions/getPairs'            
+            $ref: '#/definitions/getPairs'
+  /roster/{id}:
+    delete:
+      description: Delete one student
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: student id
+          required: true
+      responses:
+        200:
+          description: Message
+          schema:
+            type: string
+    put:
+      description: Edit one student
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: student id
+          required: true
+        - name: record
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Student"  
+      responses:
+        200:
+          description: Message
+          schema:
+            type: string
   /quiz/{classNum}:
     get:
       description: Get all quizzes
