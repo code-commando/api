@@ -15,6 +15,11 @@ let solution = {};
 let onStdoutArray = [];
 let onStderrArray = [];
 var fileName;
+/*
+  change following repo in future depending on github repo
+ */
+let fileExtension;
+let dirPath = `${__dirname}/../../../code`;
 router.get('/api/v1/code/:id', auth, (req, res) => {
   if (req.query.classCode) {
     Classes.find({
@@ -28,7 +33,6 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
             'Authorization': `Bearer ${req.cookies.jwt}`,
           })
           .then(arr => {
-
             // console.log(arr.body[dayId-1].url);
             let day = arr.body[dayId - 1].url;
             return superagent.get(day)
@@ -50,27 +54,28 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
       });
   }
 });
-
 /**
  * 
  * POST or PUT request from front end to execute the given code and save data on github class repo
  */
-router.post('/api/v1/code', (req, res) => {
+router.post('/api/v1/code',auth, (req, res) => {
   let code = req.body.code;
-  //Change SHA of Github REPO as needed or pass it from request
-  let shaRepo = '89194f6b0b79584a48e0e3bcd5ee01dafabd128c';
-  let sha = req.body.sha || shaRepo;
+
   if(req.body.language === 'javascript'){
-    fileName = req.body.fileName || 
-  new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';}
-  else if(req.body.language === 'python'){
-    fileName = req.body.fileName || 
-  new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';}
-  //get day information from original electron request after login and append day to github post request
-  let day = req.body.day;
-  if ( ! fileName ) { 
-    return('No fileName Specified'); 
+    fileExtension = '.js';
   }
+  else if(req.body.language === 'python'){
+    fileExtension = '.py';
+  }
+  else if(req.body.language === 'java'){
+    fileExtension = '.java';
+  }
+
+  fileName = req.body.fileName || 
+  new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+`${fileExtension}`;
+  
+  //get day name information from original electron request after login and append day to github post request
+  let day = req.body.day;
   /**
    * Following code is written if incase the code file is heavy and needs to be copied to local folder first and then stream to github. Can be used in future or scrap if no future scope is seen
    * 
@@ -89,38 +94,45 @@ router.post('/api/v1/code', (req, res) => {
   let encodedBuffer = new Buffer(code);
   let base64Encoded = encodedBuffer.toString('base64');
 
-  /*
-  change following repo in future depending on github repo
-  */
-  let repo = 'sample-class';
   /**
    * Build github file object
+   * Change committer details
    */
   let githubObject = {
-    'message': 'commit message',
+    'message': 'updated from code commando code runner',
     'committer': {
       'name': 'MR',
       'email': 'madhu.rebbana@gmail.com',
     },
     'content': base64Encoded,
-    'sha':sha,
   };
+  if(req.body.sha){
+    githubObject.sha = req.body.sha;
+  }
   /**
    * Make a PUT request to github now. 'Github API considers POST and PUT both as PUT request.
    * 'POST' a new file to github requires just the SHA of Repo that you will be posting to
    * 'PUT' request is to update existing file and request body should have SHA specific to the file that you are trying to update
    */ 
-  superagent.put(`https://api.github.com/repos/code-commando/${repo}/contents/${day}/${fileName}`)
-    .set('Authorization', `Basic bXJlYmI6YW1tdTIzMDg=`)
-    .send(githubObject)
-    .then(response=>console.log(response.text))
-    .catch(err=>console.log('error',err));
+  if (req.query.classCode) {
+    Classes.find({
+      classCode: req.query.classCode,
+    }).then(results=>{
+      superagent.put(`${results[0].apiLink}${day}/${fileName}`)
+        .set({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${req.cookies.jwt}`,
+        })
+        .send(githubObject)
+        .then(response=>console.log(response.text))
+        .catch(err=>console.log('error',err));
+    });
+  }
   /*
     NEL package work starts here. Compile & execute the code and return response to client
   */
   if(req.body.language === 'javascript'){
-    let session = new nel.Session();
-    solution.input = code;
+    var session = new nel.Session();
     session.execute(code, {
       onSuccess: (output) => {
         solution.return = output.mime['text/plain'];
@@ -130,28 +142,85 @@ router.post('/api/v1/code', (req, res) => {
       },
       onStdout: (output) => {
         onStdoutArray.push(output);
-        solution['console.log'] = onStdoutArray;
+        solution.log = onStdoutArray;
       },
       onStderr: (output) => {
         onStderrArray.push(output);
         solution['console.error'] = onStderrArray;
       },
       afterRun: () => {
-        res.send(solution);
+        onStdoutArray = [];
+        let outputResult = {};
+        if(solution.error){
+          outputResult.error = solution.error;
+          res.send(outputResult);
+        }
+        else if(solution.log&& !solution.return){
+          outputResult.log=solution.log ;
+          solution.log = null;
+          let resultArray = outputResult.log;
+          for(let val of resultArray){
+            resultArray[val] += resultArray[val];
+          }
+          res.send(resultArray);
+        }
+        else if(solution.log&& solution.return){
+          outputResult.log=solution.log ;
+          outputResult.return = solution.return;
+          solution.log = null;
+          let resultArray = outputResult.log;
+          for(let val of resultArray){
+            resultArray[val] += resultArray[val];
+          }
+          let finalResult = resultArray +'\n' + outputResult.return;
+          res.send(finalResult);
+        }
+        else if(!solution.log&& solution.return){
+          outputResult.return = solution.return;
+          res.send(outputResult.return);
+        }
+
       },
     });
   }
   else if(req.body.language === 'python'){
     let input = null;
     compileRun.runPython(code, input, function (stdout, stderr, err) {
-      if(!err){
-        console.log(stdout);
-        console.log(stderr);
+      if(!stderr){
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+          
+        });
         res.send(stdout);
       }
       else{
         console.log(err);
-        res.send(err);
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+        });
+        res.send(stderr);
+      }
+    });
+  }
+  else if(req.body.language === 'java'){
+    let input = null;
+    compileRun.runJava(code, input, function (stdout, stderr, err) {
+      if(!stderr){
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+        });
+        res.send(stdout);
+      }
+      else{
+        fs.remove(dirPath,err=>{
+          if (err) return console.error(err);
+          console.log('Successfully removed the code dir');
+        });
+        console.log(err);
+        res.send(stderr);
       }
     });
   }

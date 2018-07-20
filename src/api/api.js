@@ -54,15 +54,12 @@ router.get('/api/v1/:model', auth, (req, res, next) => {
       .then(data => sendJSON(res, data));
   } else {
     req.model.find({})
-
       .then(data => {
         sendJSON(res, data);
       })
       .catch(next);
   }
 });
-
-
 
 router.get('/api/v1/:model/random', auth, (req, res) => {
   req.model.find({})
