@@ -3,7 +3,10 @@ const router = express.Router();
 import nel from 'nel';
 import superagent from 'superagent';
 import compileRun from 'compile-run';
-// import fs from 'fs';
+// require('../../../nock/code.js');
+import fs from 'fs-extra';
+import auth from '../../auth/middleware.js';
+import Classes from '../../models/classes.js';
 
 /*
 Declare nel package solution object and stdOut and stdErr arrays
@@ -12,30 +15,41 @@ let solution = {};
 let onStdoutArray = [];
 let onStderrArray = [];
 var fileName;
-router.get('/api/v1/code', (req, res) => {
-  /*
-Send a superagent request to get the demo file(s) 
-for that day (that has been previously aquired by the electron login),
-and then display them to the DOM to be later dealt with for the UI team.
-*/
-  return superagent.get('https://api.github.com/repos/code-commando/sample-class/contents/')
-    .then(arr => {
-      //console.log(arr.body[0].url);
-      let day1 = arr.body[0].url;
-      return superagent.get(day1)
-        .then(data => {
-          let filtered = data.body.filter((e) => e.name.split('.')[1] === 'js');
-          //console.log('filtered --> ', filtered);
-          let file = filtered.map((e) =>{
-            return (e.download_url+', file:'+e.name+', sha: '+e.sha);
-          });
-          //console.log('file -->', file);
-          res.send(file);
-          res.end();
-        });
-    });
-});
+router.get('/api/v1/code/:id', auth, (req, res) => {
+  if (req.query.classCode) {
+    Classes.find({
+      classCode: req.query.classCode,
+    })
+      .then(results => {
+        let dayId = req.params.id;
+        return superagent.get(`${results[0].apiLink}`)
+          .set({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${req.cookies.jwt}`,
+          })
+          .then(arr => {
 
+            // console.log(arr.body[dayId-1].url);
+            let day = arr.body[dayId - 1].url;
+            return superagent.get(day)
+              .then(data => {
+                let filtered = data.body.filter((e) => e.name.split('.')[1] === 'js');
+                //console.log('filtered --> ', filtered);
+                let file = filtered.map((e) => {
+                  return {
+                    link: e.download_url,
+                    file: e.name,
+                    sha: e.sha,
+                  };
+                });
+                //console.log('file -->', file);
+                res.send(file);
+                res.end();
+              });
+          });
+      });
+  }
+});
 
 /**
  * 
