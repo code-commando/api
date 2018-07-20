@@ -54,15 +54,12 @@ router.get('/api/v1/:model', auth, (req, res, next) => {
       .then(data => sendJSON(res, data));
   } else {
     req.model.find({})
-
       .then(data => {
         sendJSON(res, data);
       })
       .catch(next);
   }
 });
-
-
 
 router.get('/api/v1/:model/random', auth, (req, res) => {
   req.model.find({})
@@ -105,17 +102,9 @@ router.get('/api/v1/:model/pairs', auth, (req, res) => {
 
 router.get('/api/v1/:model/:id', auth, (req, res, next) => {
   if (req.params.model === 'readme') {
-    if (req.query.classCode) {
-      console.log(req.query.classCode);
-      Classes.find({ classCode: req.query.classCode })
-        .then(results => {
-          req.model.findOne({ _id: req.params.id }, req.cookies.jwt, results[0].apiLink)
-            .then(data => res.send(data))
-            .catch(next);
-        });
-    } else {
-      next();
-    }
+    req.model.findOne({ _id: req.params.id }, req.cookies.jwt)
+      .then(data => res.send(data))
+      .catch(next);
   } else {
     req.model.findOne({ _id: req.params.id })
       .then(data => sendJSON(res, data))

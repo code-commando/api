@@ -1,7 +1,7 @@
 'use strict';
 
 import express from 'express';
-import morgan from 'morgan';
+// import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -14,15 +14,18 @@ import noAuth from './middleware/401.js';
 import errorHandler from './middleware/error.js';
 import noBody from './middleware/400.js';
 
+import quizRouter from './quiz/router.js';
 
 let app = express();
 
 app.use(cors());
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(codeRunnerRouter);
+
+app.use(quizRouter);
 app.use(router);
 app.use(authRouter);
 

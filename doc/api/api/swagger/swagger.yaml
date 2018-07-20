@@ -1,0 +1,57 @@
+---
+swagger: "2.0"
+info:
+  description: N/A
+  version: "1"
+  title: Core API
+host: localhost:3131
+basePath: /api/v1
+schemes:
+- http
+paths:
+  /roster:
+    get:
+      description: Get all students
+      responses:
+        200:
+          description: Returned a list of students
+          schema:
+            $ref: '#/definitions/getStudents'
+    post:
+      description: Create a new student for a given model
+      consumes:
+      - application/json
+      parameters:
+      - name: record
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/Student" 
+      responses:
+        200:
+          description: Returned the created student
+          schema:
+            $ref: '#/definitions/Student'
+
+definitions:
+  Student:
+    type: object
+    required:
+      - name
+      - classCode
+    properties:
+      name:
+        type: string
+      classCode:
+        type: string
+  getStudents:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object

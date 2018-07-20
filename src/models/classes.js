@@ -16,4 +16,10 @@ classesSchema.pre('save', function(next) {
   next();
 });
 
+classesSchema.pre('save', function(next) {
+  let repo = this.githubRepo;
+  this.apiLink = 'https://api.github.com/repos/' + repo.split('.com/')[1] + '/contents/';
+  next();
+});
+
 export default mongoose.model('classes', classesSchema);
