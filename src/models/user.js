@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 const userSchema = new mongoose.Schema({
   user: { type: String, required: true, unique: true },
   jwt: { type: String, required: true },
+  courses: [{type: mongoose.Schema.Types.ObjectId, ref: 'classes'}],
 });
 
 
