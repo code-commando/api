@@ -12,7 +12,7 @@ import randomStudent from '../middleware/random';
 import randomPairs from '../middleware/pairs';
 import auth from '../auth/middleware.js';
 import User from '../models/user.js';
-
+import Classes from '../models/classes.js';
 
 router.get('/api/v1/:model', auth, (req, res, next) => {
   if (req.params.model === 'roster') {
@@ -54,15 +54,12 @@ router.get('/api/v1/:model', auth, (req, res, next) => {
       .then(data => sendJSON(res, data));
   } else {
     req.model.find({})
-
       .then(data => {
         sendJSON(res, data);
       })
       .catch(next);
   }
 });
-
-
 
 router.get('/api/v1/:model/random', auth, (req, res) => {
   req.model.find({})
@@ -151,7 +148,7 @@ router.delete('/api/v1/:model/:id', auth, (req, res, next) => {
   req.model.findById(req.params.id)
     .then(data => {
       if (data === null) {
-        next('404');
+        next();
       } else {
         req.model.findByIdAndDelete(req.params.id)
           .then(() => {

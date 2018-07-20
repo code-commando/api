@@ -8,7 +8,12 @@ const classesSchema = mongoose.Schema({
   canvasClassId: {type: String},
   githubRepo: {type: String, required: true},
   apiLink: {type: String},
-//  authorizedUSers: {type: [userSchema]}, 
+});
+
+classesSchema.pre('save', function(next) {
+  let repo = this.githubRepo;
+  this.apiLink = 'https://api.github.com/repos/' + repo.split('.com/')[1] + '/contents/';
+  next();
 });
 
 classesSchema.pre('save', function(next) {
