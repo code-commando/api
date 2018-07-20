@@ -10,7 +10,6 @@ export default (req, res, next) => {
           next(401);
         }
         else {
-          console.log('in middleware', user);
           req.user = user._id;
           req.cookies.jwt = user.jwt;
           next();

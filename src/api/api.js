@@ -12,7 +12,7 @@ import randomStudent from '../middleware/random';
 import randomPairs from '../middleware/pairs';
 import auth from '../auth/middleware.js';
 import User from '../models/user.js';
-
+import Classes from '../models/classes.js';
 
 router.get('/api/v1/:model', auth, (req, res, next) => {
   if (req.params.model === 'roster') {
@@ -105,9 +105,17 @@ router.get('/api/v1/:model/pairs', auth, (req, res) => {
 
 router.get('/api/v1/:model/:id', auth, (req, res, next) => {
   if (req.params.model === 'readme') {
-    req.model.findOne({ _id: req.params.id }, req.cookies.jwt)
-      .then(data => res.send(data))
-      .catch(next);
+    if (req.query.classCode) {
+      console.log(req.query.classCode);
+      Classes.find({ classCode: req.query.classCode })
+        .then(results => {
+          req.model.findOne({ _id: req.params.id }, req.cookies.jwt, results[0].apiLink)
+            .then(data => res.send(data))
+            .catch(next);
+        });
+    } else {
+      next();
+    }
   } else {
     req.model.findOne({ _id: req.params.id })
       .then(data => sendJSON(res, data))
@@ -151,7 +159,7 @@ router.delete('/api/v1/:model/:id', auth, (req, res, next) => {
   req.model.findById(req.params.id)
     .then(data => {
       if (data === null) {
-        next('404');
+        next();
       } else {
         req.model.findByIdAndDelete(req.params.id)
           .then(() => {
