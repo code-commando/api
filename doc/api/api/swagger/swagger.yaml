@@ -4,13 +4,19 @@ info:
   description: N/A
   version: "1"
   title: Core API
-host: localhost:3131
+host: localhost:3000
 basePath: /api/v1
 schemes:
 - http
 paths:
   /roster:
     get:
+      parameters:
+        - in: query
+          name: classCode
+          type: string
+          required: true
+          description: classCode
       description: Get all students
       responses:
         200:
@@ -32,6 +38,82 @@ paths:
           description: Returned the created student
           schema:
             $ref: '#/definitions/Student'
+  /roster/random:
+    get:
+      parameters:
+        - in: query
+          name: classCode
+          type: string
+          required: true
+          description: classCode
+      description: Get one random student
+      responses:
+        200:
+          description: Returned one random student
+          schema:
+            $ref: '#/definitions/getRandom'
+  /roster/pairs:
+    get:
+      parameters:
+        - in: query
+          name: classCode
+          type: string
+          required: true
+          description: classCode
+      description: Get random pairs
+      responses:
+        200:
+          description: Returned random pairs
+          schema:
+            $ref: '#/definitions/getPairs'
+  /roster/{id}:
+    delete:
+      description: Delete one student
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: student id
+          required: true
+      responses:
+        200:
+          description: Message
+          schema:
+            type: string
+    put:
+      description: Edit one student
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: student id
+          required: true
+        - name: record
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Student"  
+      responses:
+        200:
+          description: Message
+          schema:
+            type: string
+  /quiz/{classNum}:
+    get:
+      description: Get all quizzes
+      parameters:
+        - name: classNum
+          in: path
+          type: string
+          description: class number
+          required: true
+      responses:
+        200:
+          description: Returned a list of quiz questions
+          schema:
+            $ref: '#/definitions/getQuizzes'
 
 definitions:
   Student:
@@ -49,6 +131,37 @@ definitions:
     properties:
       classCode:
         type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getRandom:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getPairs:
+    type: object
+    properties:
+      classCode:
+        type: string
+      count:
+        type: number
+      results:
+        type: array
+        items:
+          type: object
+  getQuizzes:
+    type: object
+    properties:
       count:
         type: number
       results:
