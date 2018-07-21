@@ -13,11 +13,10 @@ import randomPairs from '../middleware/pairs';
 import auth from '../auth/middleware.js';
 import User from '../models/user.js';
 import Classes from '../models/classes.js';
-
-router.get('/api/v1/:model', auth, (req, res, next) => {
-  if (req.params.model === 'roster') {
-    if (req.query.classCode) {
-      req.model.find({ classCode: req.query.classCode })
+router.get('/api/v1/:model', (req,res,next) => {
+  if(req.params.model === 'roster') {
+    if(req.query.classCode){
+      req.model.find({classCode: req.query.classCode})
         .then(students => {
           let studentName = students.map(student => student.name);
           let code = students.map(student => student.classCode);
@@ -28,22 +27,11 @@ router.get('/api/v1/:model', auth, (req, res, next) => {
             classCode: code[0],
           };
         })
-        .then(data => sendJSON(res, data))
-        .catch(next);
-    } else {
-      req.model.find({})
-        .then(students => {
-          let studentName = students.map(student => student.name);
-          let code = students.map(student => student.classCode);
-          let count = studentName.length;
-          return {
-            count,
-            results: studentName,
-            classCode: code[0],
-          };
-        })
-        .then(data => sendJSON(res, data))
-        .catch(next);
+        .then( data => sendJSON(res,data) )
+        .catch( next );
+    }
+    else {
+      res.send('MUST USE CLASS CODE');
     }
   } else if (req.params.model === 'user') {
     req.model.findById(req.user)
@@ -54,49 +42,60 @@ router.get('/api/v1/:model', auth, (req, res, next) => {
       .then(data => sendJSON(res, data));
   } else {
     req.model.find({})
-      .then(data => {
-        sendJSON(res, data);
+      .then( data => {
+        sendJSON(res,data); 
       })
-      .catch(next);
+      .catch( next );
   }
 });
 
-router.get('/api/v1/:model/random', auth, (req, res) => {
-  req.model.find({})
-    .then(students => {
-      let unpicked = students.filter(student => !student.picked);
+router.get('/api/v1/:model/random', (req, res) => {
+  if(req.query.classCode) {
+    req.model.find({classCode: req.query.classCode})
+      .then(students => {
+        let unpicked = students.filter(student => !student.picked);
+        if(unpicked.length === 0) {
+          req.model.updateMany({picked: true}, {picked: false})
+            .then(() => {
+              req.model.find({})
+                .then(students => {
+                  let randomS = randomStudent(students, req.model);
+              
+                  res.send(randomS);
+                });
+            });
+        }
+        else{
+          let randomS = randomStudent(unpicked, req.model);
 
-      if (unpicked.length === 0) {
-        req.model.updateMany({ picked: true }, { picked: false })
-          .then(updateResult => {
-            console.log({ updateResult });
-            req.model.find({})
-              .then(students => {
-                let randomS = randomStudent(students, req.model);
-
-                res.send(randomS);
-              });
-          });
-      }
-      else {
-        let randomS = randomStudent(unpicked, req.model);
-
-        res.send(randomS);
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    });
+          res.send(randomS);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  else {
+    res.send('MUST USE CLASS CODE');
+  }
 });
 
 
-router.get('/api/v1/:model/pairs', auth, (req, res) => {
-  req.model.find({})
-    .then(students => {
-      let studentNames = students.map(student => student.name);
-      let code = students.map(student => student.classCode);
-      res.send(randomPairs(studentNames, code[0]));
-    });
+router.get('/api/v1/:model/pairs', (req, res) => {
+  if(req.query.classCode) {
+    req.model.find({classCode: req.query.classCode})
+      .then(students => {
+        let studentNames = students.map(student => student.name);
+        let code = students.map(student => student.classCode);
+        res.send(randomPairs(studentNames, code[0]));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  else {
+    res.send('MUST USE CLASS CODE');
+  }
 });
 
 
