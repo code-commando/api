@@ -313,6 +313,4 @@ definitions:
           type: array
           items:
             type: object   
-      
-      
-        
+
