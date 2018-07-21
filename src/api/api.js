@@ -10,8 +10,9 @@ router.param('model', modelFinder);
 
 import randomStudent from '../middleware/random';
 import randomPairs from '../middleware/pairs';
-
-
+import auth from '../auth/middleware.js';
+import User from '../models/user.js';
+import Classes from '../models/classes.js';
 router.get('/api/v1/:model', (req,res,next) => {
   if(req.params.model === 'roster') {
     if(req.query.classCode){
@@ -32,6 +33,13 @@ router.get('/api/v1/:model', (req,res,next) => {
     else {
       res.send('MUST USE CLASS CODE');
     }
+  } else if (req.params.model === 'user') {
+    req.model.findById(req.user)
+      .populate('courses')
+      .then(user => {
+        return user;
+      })
+      .then(data => sendJSON(res, data));
   } else {
     req.model.find({})
       .then( data => {
@@ -40,8 +48,6 @@ router.get('/api/v1/:model', (req,res,next) => {
       .catch( next );
   }
 });
-
-
 
 router.get('/api/v1/:model/random', (req, res) => {
   if(req.query.classCode) {
@@ -93,32 +99,62 @@ router.get('/api/v1/:model/pairs', (req, res) => {
 });
 
 
-router.get('/api/v1/:model/:id', (req,res,next) => {
-  req.model.findOne({_id:req.params.id})
-    .then( data => sendJSON(res,data) )
-    .catch( next );
+router.get('/api/v1/:model/:id', auth, (req, res, next) => {
+  if (req.params.model === 'readme') {
+    if (req.query.classCode) {
+      console.log(req.query.classCode);
+      Classes.find({ classCode: req.query.classCode })
+        .then(results => {
+          req.model.findOne({ _id: req.params.id }, req.cookies.jwt, results[0].apiLink)
+            .then(data => res.send(data))
+            .catch(next);
+        });
+    } else {
+      next();
+    }
+  } else {
+    req.model.findOne({ _id: req.params.id })
+      .then(data => sendJSON(res, data))
+      .catch(next);
+  }
 });
 
-router.post('/api/v1/:model', (req,res,next) => {
-  let record = new req.model(req.body);
-  record.save()
-    .then( data => sendJSON(res,data) )
-    .catch( next );
+router.post('/api/v1/:model', auth, (req, res, next) => {
+  console.log(req.user);
+  if (req.params.model === 'classes') {
+    let record = new req.model(req.body);
+    record.save()
+      .then(data => {
+        return User.findById(req.user)
+          .then(user => {
+            console.log('this is the user', user);
+            user.courses.push(data._id);
+            user.save();
+            return sendJSON(res, data);
+          });
+      })
+      .catch(next);
+  } else {
+    let record = new req.model(req.body);
+    record.save()
+      .then(data => sendJSON(res, data))
+      .catch(next);
+  }
 });
 
-let sendJSON = (res,data) => {
+let sendJSON = (res, data) => {
   res.statusCode = 200;
   res.statusMessage = 'OK';
   res.setHeader('Content-Type', 'application/json');
-  res.write( JSON.stringify(data) );
+  res.write(JSON.stringify(data));
   res.end();
 };
 
-router.delete('/api/v1/:model/:id', (req, res, next) => {
+router.delete('/api/v1/:model/:id', auth, (req, res, next) => {
   req.model.findById(req.params.id)
     .then(data => {
       if (data === null) {
-        next('404');
+        next();
       } else {
         req.model.findByIdAndDelete(req.params.id)
           .then(() => {
@@ -131,11 +167,11 @@ router.delete('/api/v1/:model/:id', (req, res, next) => {
     .catch(next);
 });
 
-router.put('/api/v1/:model/:id', (req, res, next) => {
+router.put('/api/v1/:model/:id', auth, (req, res, next) => {
   if (Object.keys(req.body).length === 0) {
     next('400');
   } else {
-    req.model.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    req.model.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .then((data) => {
         sendJSON(res, data);
       })

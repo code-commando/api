@@ -200,8 +200,7 @@ paths:
         200: 
           description: post ok
           schema: 
-            $ref: '#/definitions/postCode'
-          
+            $ref: '#/definitions/postCode'          
 definitions:
   Student:
     type: object
@@ -286,7 +285,3 @@ definitions:
           type: string
         day: 
           type: string
-      
-      
-      
-        
