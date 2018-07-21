@@ -65,20 +65,20 @@ console.log('test');`].join('\n'),
             let obj = {}
             obj.code = data;
             // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.js';
-            // obj.fileName = new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+'.py';
-            //'Jul16201820:07:z3i0f35uzm.js';
             obj.day = '01-node-ecosystem'
             obj.language = 'javascript';
-            
-            // obj.sha = '563cec42a9bdbee9d7c0a2428486dcbe094f2f51'
+            // obj.sha = 'b79b58acbe178952d0a562c4aba057c2cd8b72f3'
+    //obj.fileName = 'Jul19201823:19:7uzeivtnke.js'
+    var token = ''
             console.log('data -->', obj);
             $.ajax({
                 type: "POST",
                 url:"http://localhost:3000/api/v1/code",
+                headers: {'Authorization': `Bearer ${token}`},
                 data: obj,
                 success: function (data) {
-                    if(obj.language==='javascript'){
-                data = JSON.stringify(data)
+                    if(data.error){
+                data = JSON.stringify(data.error)
             }
                     console.log(data);
                     $('#result').text(data);
