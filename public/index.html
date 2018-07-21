@@ -35,7 +35,7 @@
     }
 
     let QueryString = Object.keys(options).map((key, i) => {
-      return `${key}=` + encodeURIComponent(options[key]);
+      return `${key}=` +  encodeURIComponent(options[key]);
     }).join("&");
 
     let authURL = `${githubURL}?${QueryString}`;
