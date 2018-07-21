@@ -61,8 +61,6 @@ describe('api routes for roster', () => {
         return mockRequest
           .get(ROSTER_URL)
           .then(response => {
-            console.log('yyyyyyyy', response.body);
-            
             expect(response.body.results[0]).toBe('first last');
           });
       });
@@ -84,7 +82,6 @@ describe('api routes for roster', () => {
       .post(ROSTER_URL)
       .send(name1)
       .then(data => {
-        console.log('JIFOEJFEOJ', data.text);
         return mockRequest
           .put(`${ROSTER_URL}/${data.body._id}`)
           .send({name: 'nota name'})

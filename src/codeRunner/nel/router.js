@@ -36,11 +36,19 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
             // console.log(arr.body[dayId-1].url);
             let day = arr.body[dayId - 1].url;
             return superagent.get(day)
+              .set({
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${req.cookies.jwt}`,
+              })
               .then(data => {
                 let filtered = data.body.filter((e) => e.name.split('.')[1] === 'js');
                 //console.log('filtered --> ', filtered);
                 let file = filtered.map((e) => {
-                  return (e.download_url + ', file:' + e.name + ', sha: ' + e.sha);
+                  return {
+                    link: e.download_url,
+                    file: e.name,
+                    sha: e.sha,
+                  };
                 });
                 //console.log('file -->', file);
                 res.send(file);
@@ -149,15 +157,13 @@ router.post('/api/v1/code',auth, (req, res) => {
         let outputResult = {};
         if(solution.error){
           outputResult.error = solution.error;
+          solution.error = null;
           res.send(outputResult);
         }
         else if(solution.log&& !solution.return){
           outputResult.log=solution.log ;
           solution.log = null;
           let resultArray = outputResult.log;
-          for(let val of resultArray){
-            resultArray[val] += resultArray[val];
-          }
           res.send(resultArray);
         }
         else if(solution.log&& solution.return){
@@ -165,10 +171,7 @@ router.post('/api/v1/code',auth, (req, res) => {
           outputResult.return = solution.return;
           solution.log = null;
           let resultArray = outputResult.log;
-          for(let val of resultArray){
-            resultArray[val] += resultArray[val];
-          }
-          let finalResult = resultArray +'\n' + outputResult.return;
+          let finalResult = resultArray.join('') +'\n' + outputResult.return;
           res.send(finalResult);
         }
         else if(!solution.log&& solution.return){

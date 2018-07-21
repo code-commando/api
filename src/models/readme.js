@@ -4,15 +4,15 @@ import superagent from 'superagent';
 
 
 export default class ReadMe {
-  static findOne(day, jwt) {
-    return ReadMe.fetch(day, jwt)
+  static findOne(day, jwt, apiUrl) {
+    return ReadMe.fetch(day, jwt, apiUrl)
       .then(README => {
         return README;
       });
   }
 
-  static fetch(day, jwt) {
-    return superagent.get('https://api.github.com/repos/code-commando/sample-class/contents/')
+  static fetch(day, jwt, apiUrl) {
+    return superagent.get(apiUrl)
       .set({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` })
       .then(data => {
         return superagent.get(data.body[parseInt(day._id) - 1].url)
