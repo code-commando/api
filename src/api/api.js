@@ -14,10 +14,17 @@ import auth from '../auth/middleware.js';
 import User from '../models/user.js';
 import Classes from '../models/classes.js';
 
+<<<<<<< Updated upstream
 router.get('/api/v1/:model', auth, (req, res, next) => {
   if (req.params.model === 'roster') {
     if (req.query.classCode) {
       req.model.find({ classCode: req.query.classCode })
+=======
+router.get('/api/v1/:model', auth, (req,res,next) => {
+  if(req.params.model === 'roster') {
+    if(req.query.classCode){
+      req.model.find({classCode: req.query.classCode})
+>>>>>>> Stashed changes
         .then(students => {
           let studentName = students.map(student => student.name);
           let code = students.map(student => student.classCode);
@@ -46,9 +53,11 @@ router.get('/api/v1/:model', auth, (req, res, next) => {
         .catch(next);
     }
   } else if (req.params.model === 'user') {
+    console.log(req.user);
     req.model.findById(req.user)
       .populate('courses')
       .then(user => {
+        console.log(user);
         return user;
       })
       .then(data => sendJSON(res, data));
@@ -62,6 +71,7 @@ router.get('/api/v1/:model', auth, (req, res, next) => {
 });
 
 router.get('/api/v1/:model/random', auth, (req, res) => {
+<<<<<<< Updated upstream
   req.model.find({})
     .then(students => {
       let unpicked = students.filter(student => !student.picked);
@@ -87,16 +97,63 @@ router.get('/api/v1/:model/random', auth, (req, res) => {
     .catch(err => {
       console.log(err);
     });
+=======
+  if(req.query.classCode) {
+    req.model.find({classCode: req.query.classCode})
+      .then(students => {
+        let unpicked = students.filter(student => !student.picked);
+        if(unpicked.length === 0) {
+          req.model.updateMany({picked: true}, {picked: false})
+            .then(() => {
+              req.model.find({})
+                .then(students => {
+                  let randomS = randomStudent(students, req.model);
+              
+                  res.send(randomS);
+                });
+            });
+        }
+        else{
+          let randomS = randomStudent(unpicked, req.model);
+
+          res.send(randomS);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  else {
+    res.send('MUST USE CLASS CODE');
+  }
+>>>>>>> Stashed changes
 });
 
 
 router.get('/api/v1/:model/pairs', auth, (req, res) => {
+<<<<<<< Updated upstream
   req.model.find({})
     .then(students => {
       let studentNames = students.map(student => student.name);
       let code = students.map(student => student.classCode);
       res.send(randomPairs(studentNames, code[0]));
     });
+=======
+  if(req.query.classCode) {
+    req.model.find({classCode: req.query.classCode})
+      .then(students => {
+        let studentNames = students.map(student => student.name);
+        let code = students.map(student => student.classCode);
+        res.send(randomPairs(studentNames, code[0]));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  else {
+    res.send('MUST USE CLASS CODE');
+  }
+>>>>>>> Stashed changes
 });
 
 
