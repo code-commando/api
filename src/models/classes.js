@@ -1,7 +1,6 @@
 'use strict';
 
 import mongoose from 'mongoose';
-// import userSchema from './user.js';
 
 const classesSchema = mongoose.Schema({
   classCode: {type: String, required: true},

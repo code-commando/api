@@ -13,6 +13,7 @@ import randomPairs from '../middleware/pairs';
 import auth from '../auth/middleware.js';
 import User from '../models/user.js';
 import Classes from '../models/classes.js';
+<<<<<<< HEAD
 
 router.get('/api/v1/:model', auth, (req,res,next) => {
   if(req.params.model === 'roster') {
@@ -32,6 +33,12 @@ router.get('/api/v1/:model', auth, (req,res,next) => {
         .catch(next);
     } else {
       req.model.find({})
+=======
+router.get('/api/v1/:model', (req,res,next) => {
+  if(req.params.model === 'roster') {
+    if(req.query.classCode){
+      req.model.find({classCode: req.query.classCode})
+>>>>>>> 48e558608c3ff244ebb749b8a0646deb06b41af8
         .then(students => {
           let studentName = students.map(student => student.name);
           let code = students.map(student => student.classCode);
@@ -42,8 +49,11 @@ router.get('/api/v1/:model', auth, (req,res,next) => {
             classCode: code[0],
           };
         })
-        .then(data => sendJSON(res, data))
-        .catch(next);
+        .then( data => sendJSON(res,data) )
+        .catch( next );
+    }
+    else {
+      res.send('MUST USE CLASS CODE');
     }
   } else if (req.params.model === 'user') {
     console.log(req.user);
@@ -56,10 +66,10 @@ router.get('/api/v1/:model', auth, (req,res,next) => {
       .then(data => sendJSON(res, data));
   } else {
     req.model.find({})
-      .then(data => {
-        sendJSON(res, data);
+      .then( data => {
+        sendJSON(res,data); 
       })
-      .catch(next);
+      .catch( next );
   }
 });
 

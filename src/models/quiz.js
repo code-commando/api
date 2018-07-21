@@ -1,19 +1,6 @@
 'use strict';
-// const import fs from 'fs';
-// var obj = JSON.parse(fs.readFileSync('file', 'utf8'));
-// import three other files containing other objects until we are done, to avoid merge conflicts
 
-// import quizRandom from './quizRandom.js';
 import superagent from 'superagent';
-
-// export default class Quiz{
-// static findOne(){
-//   console.log('here were some data');
-// }
-//   static find(){
-//     return Promise.resolve('a string');
-//   }
-// }
 
 export default class Quiz {
   static findOne(day, jwt) {
@@ -28,14 +15,6 @@ export default class Quiz {
 
     });
   }
-
-
-  // quizRandom();
-  // fetch, process, magic
-  // method to fetch that returns array of objects
-  // method to process that data that returns an array
-  // method to sort, randomize, return
-
 
   static fetch(day,jwt) {
     // 1. Get a list of folders from repo. 2. Get the file contents from each quiz.json for each class before today 
@@ -69,14 +48,12 @@ export default class Quiz {
 
   static process(quizArr) {
     let newQuizArr = [];
-    // console.log('this is what we start with', quizArr);
     quizArr.forEach((quizObj) => {
       quizObj.forEach((singleQuiz) => {
         singleQuiz.forEach((question) => {
           newQuizArr.push(question);
         });
       });
-
 
     });
     return newQuizArr;
@@ -111,13 +88,4 @@ export default class Quiz {
     console.log(questions);
     return questions;
   }
-
 }
-
-
-// quizRandom(){
-//   // has method that A & J are working on 
-
-// }
-
-
