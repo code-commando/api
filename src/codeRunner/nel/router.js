@@ -164,9 +164,6 @@ router.post('/api/v1/code',auth, (req, res) => {
           outputResult.log=solution.log ;
           solution.log = null;
           let resultArray = outputResult.log;
-          for(let val of resultArray){
-            resultArray[val] += resultArray[val];
-          }
           res.send(resultArray);
         }
         else if(solution.log&& solution.return){
@@ -174,10 +171,7 @@ router.post('/api/v1/code',auth, (req, res) => {
           outputResult.return = solution.return;
           solution.log = null;
           let resultArray = outputResult.log;
-          for(let val of resultArray){
-            resultArray[val] += resultArray[val];
-          }
-          let finalResult = resultArray +'\n' + outputResult.return;
+          let finalResult = resultArray.join('') +'\n' + outputResult.return;
           res.send(finalResult);
         }
         else if(!solution.log&& solution.return){
