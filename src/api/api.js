@@ -14,17 +14,10 @@ import auth from '../auth/middleware.js';
 import User from '../models/user.js';
 import Classes from '../models/classes.js';
 
-<<<<<<< Updated upstream
-router.get('/api/v1/:model', auth, (req, res, next) => {
-  if (req.params.model === 'roster') {
-    if (req.query.classCode) {
-      req.model.find({ classCode: req.query.classCode })
-=======
 router.get('/api/v1/:model', auth, (req,res,next) => {
   if(req.params.model === 'roster') {
     if(req.query.classCode){
       req.model.find({classCode: req.query.classCode})
->>>>>>> Stashed changes
         .then(students => {
           let studentName = students.map(student => student.name);
           let code = students.map(student => student.classCode);
@@ -71,33 +64,6 @@ router.get('/api/v1/:model', auth, (req,res,next) => {
 });
 
 router.get('/api/v1/:model/random', auth, (req, res) => {
-<<<<<<< Updated upstream
-  req.model.find({})
-    .then(students => {
-      let unpicked = students.filter(student => !student.picked);
-
-      if (unpicked.length === 0) {
-        req.model.updateMany({ picked: true }, { picked: false })
-          .then(updateResult => {
-            console.log({ updateResult });
-            req.model.find({})
-              .then(students => {
-                let randomS = randomStudent(students, req.model);
-
-                res.send(randomS);
-              });
-          });
-      }
-      else {
-        let randomS = randomStudent(unpicked, req.model);
-
-        res.send(randomS);
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    });
-=======
   if(req.query.classCode) {
     req.model.find({classCode: req.query.classCode})
       .then(students => {
@@ -126,19 +92,10 @@ router.get('/api/v1/:model/random', auth, (req, res) => {
   else {
     res.send('MUST USE CLASS CODE');
   }
->>>>>>> Stashed changes
 });
 
 
 router.get('/api/v1/:model/pairs', auth, (req, res) => {
-<<<<<<< Updated upstream
-  req.model.find({})
-    .then(students => {
-      let studentNames = students.map(student => student.name);
-      let code = students.map(student => student.classCode);
-      res.send(randomPairs(studentNames, code[0]));
-    });
-=======
   if(req.query.classCode) {
     req.model.find({classCode: req.query.classCode})
       .then(students => {
@@ -153,7 +110,6 @@ router.get('/api/v1/:model/pairs', auth, (req, res) => {
   else {
     res.send('MUST USE CLASS CODE');
   }
->>>>>>> Stashed changes
 });
 
 
