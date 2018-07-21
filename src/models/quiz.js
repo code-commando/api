@@ -3,8 +3,8 @@
 import superagent from 'superagent';
 
 export default class Quiz {
-  static findOne(day) {
-    return Quiz.fetch(day).then(quizzes => {
+  static findOne(day, jwt) {
+    return Quiz.fetch(day, jwt).then(quizzes => {
       console.log({ quizzes });
       let processed = Quiz.process(quizzes);
       const questions = Quiz.randomQuiz(processed);
@@ -16,8 +16,10 @@ export default class Quiz {
     });
   }
 
-  static fetch(day) {
+  static fetch(day,jwt) {
+    // 1. Get a list of folders from repo. 2. Get the file contents from each quiz.json for each class before today 
     return superagent.get('https://api.github.com/repos/code-commando/sample-class/contents/')
+      .set({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` })
       .then(data => {
         let dayArr = JSON.parse(data.text);
         let urlArr = dayArr.reduce((list, classDay) => {
@@ -28,7 +30,8 @@ export default class Quiz {
         let requests = [];
         for (let i = (urlArr.length - 1); i >= 0; i--) {
           let newUrl = urlArr[i].replace('github', 'raw.githubusercontent').replace('/blob', '').replace('/tree', '') + '/quiz.json';
-          requests.push(superagent.get(newUrl));
+          // console.log(newUrl);
+          requests.push(superagent.get(newUrl).set({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }));
         }
 
         return Promise.all(requests).then(responses => {
@@ -51,6 +54,7 @@ export default class Quiz {
           newQuizArr.push(question);
         });
       });
+
     });
     return newQuizArr;
   }
