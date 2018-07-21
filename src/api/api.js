@@ -128,12 +128,11 @@ router.post('/api/v1/:model', auth, (req, res, next) => {
       .then(data => {
         return User.findById(req.user)
           .then(user => {
-            console.log('this is the user', user)
+            console.log('this is the user', user);
             user.courses.push(data._id);
             user.save();
             return sendJSON(res, data);
-
-          })
+          });
       })
       .catch(next);
   } else {
