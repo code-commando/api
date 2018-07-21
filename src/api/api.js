@@ -132,8 +132,20 @@ router.delete('/api/v1/:model/:id', (req, res, next) => {
 });
 
 router.put('/api/v1/:model/:id', (req, res, next) => {
+
   if (Object.keys(req.body).length === 0) {
     next('400');
+  }
+  else if (req.params.model === 'roster') {
+    req.model.findByIdAndUpdate(req.params.id, req.body, {new: true})
+      .then((data) => {
+        data.save()
+          .then(data => {
+            sendJSON(res, data);
+          });
+      })
+      .catch(next);
+
   } else {
     req.model.findByIdAndUpdate(req.params.id, req.body, {new: true})
       .then((data) => {
