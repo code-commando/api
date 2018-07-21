@@ -59,7 +59,7 @@ describe('api routes for roster', () => {
       .send(name1)
       .then(() => {
         return mockRequest
-          .get(ROSTER_URL)
+          .get(`${ROSTER_URL}?classCode=401n5`)
           .then(response => {
             expect(response.body.results[0]).toBe('first last');
           });
@@ -87,6 +87,21 @@ describe('api routes for roster', () => {
           .send({name: 'nota name'})
           .then(response => {
             expect(response.body.name).toBe('nota name');
+          });
+      });
+  });
+
+  it('PUT roster updates all the student info (when you change just the name, it also updates sortable name and short name', () => {
+    let name1 = {name: 'first last', classCode: '401n5'};
+    return mockRequest
+      .post(ROSTER_URL)
+      .send(name1)
+      .then(data => {
+        return mockRequest
+          .put(`${ROSTER_URL}/${data.body._id}`)
+          .send({name: 'nota name'})
+          .then(response => {
+            expect(response.body.sortable_name).toBe('name, nota');
           });
       });
   });
