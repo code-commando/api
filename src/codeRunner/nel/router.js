@@ -62,22 +62,22 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
  * 
  * POST or PUT request from front end to execute the given code and save data on github class repo
  */
-router.post('/api/v1/code', auth, (req, res) => {
+router.post('/api/v1/code',auth, (req, res) => {
   let code = req.body.code;
 
-  if (req.body.language === 'javascript') {
+  if(req.body.language === 'javascript'){
     fileExtension = '.js';
   }
-  else if (req.body.language === 'python') {
+  else if(req.body.language === 'python'){
     fileExtension = '.py';
   }
-  else if (req.body.language === 'java') {
+  else if(req.body.language === 'java'){
     fileExtension = '.java';
   }
 
-  fileName = req.body.fileName ||
-    new Date().toString().replace(/\s+/g, '').slice(3, 18) + Math.random().toString(36).substr(2, 10) + `${fileExtension}`;
-
+  fileName = req.body.fileName || 
+  new Date().toString().replace(/\s+/g, '').slice(3,18)+Math.random().toString(36).substr(2, 10)+`${fileExtension}`;
+  
   //get day name information from original electron request after login and append day to github post request
   let day = req.body.day;
   /**
@@ -91,7 +91,7 @@ router.post('/api/v1/code', auth, (req, res) => {
     });
    */
   /***************/
-
+ 
   /*
    * base 64 encoding of code recieved from front end
    */
@@ -110,32 +110,32 @@ router.post('/api/v1/code', auth, (req, res) => {
     },
     'content': base64Encoded,
   };
-  if (req.body.sha) {
+  if(req.body.sha){
     githubObject.sha = req.body.sha;
   }
   /**
    * Make a PUT request to github now. 'Github API considers POST and PUT both as PUT request.
    * 'POST' a new file to github requires just the SHA of Repo that you will be posting to
    * 'PUT' request is to update existing file and request body should have SHA specific to the file that you are trying to update
-   */
+   */ 
   if (req.query.classCode) {
     Classes.find({
       classCode: req.query.classCode,
-    }).then(results => {
+    }).then(results=>{
       superagent.put(`${results[0].apiLink}${day}/${fileName}`)
         .set({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${req.cookies.jwt}`,
         })
         .send(githubObject)
-        .then(response => console.log(response.text))
-        .catch(err => console.log('error', err));
+        .then(response=>console.log(response.text))
+        .catch(err=>console.log('error',err));
     });
   }
   /*
     NEL package work starts here. Compile & execute the code and return response to client
   */
-  if (req.body.language === 'javascript') {
+  if(req.body.language === 'javascript'){
     var session = new nel.Session();
     session.execute(code, {
       onSuccess: (output) => {
@@ -155,31 +155,32 @@ router.post('/api/v1/code', auth, (req, res) => {
       afterRun: () => {
         onStdoutArray = [];
         let outputResult = {};
-        if (solution.error) {
+        if(solution.error){
           outputResult.error = solution.error;
+          solution.error = null;
           res.send(outputResult);
         }
-        else if (solution.log && !solution.return) {
-          outputResult.log = solution.log;
+        else if(solution.log&& !solution.return){
+          outputResult.log=solution.log ;
           solution.log = null;
           let resultArray = outputResult.log;
-          for (let val of resultArray) {
+          for(let val of resultArray){
             resultArray[val] += resultArray[val];
           }
           res.send(resultArray);
         }
-        else if (solution.log && solution.return) {
-          outputResult.log = solution.log;
+        else if(solution.log&& solution.return){
+          outputResult.log=solution.log ;
           outputResult.return = solution.return;
           solution.log = null;
           let resultArray = outputResult.log;
-          for (let val of resultArray) {
+          for(let val of resultArray){
             resultArray[val] += resultArray[val];
           }
-          let finalResult = resultArray + '\n' + outputResult.return;
+          let finalResult = resultArray +'\n' + outputResult.return;
           res.send(finalResult);
         }
-        else if (!solution.log && solution.return) {
+        else if(!solution.log&& solution.return){
           outputResult.return = solution.return;
           res.send(outputResult.return);
         }
@@ -187,20 +188,20 @@ router.post('/api/v1/code', auth, (req, res) => {
       },
     });
   }
-  else if (req.body.language === 'python') {
+  else if(req.body.language === 'python'){
     let input = null;
     compileRun.runPython(code, input, function (stdout, stderr, err) {
-      if (!stderr) {
-        fs.remove(dirPath, err => {
+      if(!stderr){
+        fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
-
+          
         });
         res.send(stdout);
       }
-      else {
+      else{
         console.log(err);
-        fs.remove(dirPath, err => {
+        fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
@@ -208,18 +209,18 @@ router.post('/api/v1/code', auth, (req, res) => {
       }
     });
   }
-  else if (req.body.language === 'java') {
+  else if(req.body.language === 'java'){
     let input = null;
     compileRun.runJava(code, input, function (stdout, stderr, err) {
-      if (!stderr) {
-        fs.remove(dirPath, err => {
+      if(!stderr){
+        fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
         res.send(stdout);
       }
-      else {
-        fs.remove(dirPath, err => {
+      else{
+        fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
