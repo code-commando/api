@@ -257,20 +257,40 @@ router.post('/api/v1/code',auth, (req, res) => {
   else if(req.body.language === 'java'){
     let input = null;
     compileRun.runJava(code, input, function (stdout, stderr, err) {
+      if (req.query.classCode) {
+        Classes.find({
+          classCode: req.query.classCode,
+        }).then(results=>{
+          superagent.put(`${results[0].apiLink}${day}/${fileName}`)
+            .set({
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${req.cookies.jwt}`,
+            })
+            .send(githubObject)
+            .then(response=>{
+              shaNewFile = response.body.content.sha;
+              fileName = response.body.content.name;
+              outputResult.shaNewFile = shaNewFile;
+              outputResult.fileName = fileName;
+            });
+        });
+      }
       if(!stderr){
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
-        res.send(stdout);
+        outputResult.return = stdout;
+        res.send(outputResult);
       }
       else{
+        console.log(err);
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
-        console.log(err);
-        res.send(stderr);
+        outputResult.error = stderr;
+        res.send(outputResult);
       }
     });
   }
