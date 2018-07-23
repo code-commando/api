@@ -16,7 +16,6 @@ let onStdoutArray = [];
 let onStderrArray = [];
 var fileName;
 var shaNewFile;
-var resultObject;
 /*
   change following repo in future depending on github repo
  */
@@ -82,17 +81,6 @@ router.post('/api/v1/code',auth, (req, res) => {
   
   //get day name information from original electron request after login and append day to github post request
   let day = req.body.day;
-  /**
-   * Following code is written if incase the code file is heavy and needs to be copied to local folder first and then stream to github. Can be used in future or scrap if no future scope is seen
-   * 
-   *let file = `${__dirname}/../tmp/${fileName}.js`;
-    let text = code;
-    fs.writeFile( file, text, (err) => {
-      if(err) { return(err); }
-      console.log('file Saved to temp!');
-    });
-   */
-  /***************/
  
   /*
    * base 64 encoding of code recieved from front end
@@ -115,30 +103,6 @@ router.post('/api/v1/code',auth, (req, res) => {
   if(req.body.sha){
     githubObject.sha = req.body.sha;
   }
-  /**
-   * Make a PUT request to github now. 'Github API considers POST and PUT both as PUT request.
-   * 'POST' a new file to github requires just the SHA of Repo that you will be posting to
-   * 'PUT' request is to update existing file and request body should have SHA specific to the file that you are trying to update
-   */ 
-  // if (req.query.classCode) {
-  //   Classes.find({
-  //     classCode: req.query.classCode,
-  //   }).then(results=>{
-  //     superagent.put(`${results[0].apiLink}${day}/${fileName}`)
-  //       .set({
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${req.cookies.jwt}`,
-  //       })
-  //       .send(githubObject)
-  //       .then(response=>{
-  //         if(!req.body.fileName){
-  //           shaNewFile = response.body.content.sha;
-  //           console.log('shanew135',shaNewFile);
-  //         }
-  //       })
-  //       .catch(err=>console.log('error',err));
-  //   });
-  // }
   /*
     NEL package work starts here. Compile & execute the code and return response to client
   */
