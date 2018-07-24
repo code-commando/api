@@ -51,6 +51,10 @@ afterEach((done) => {
 
 describe('api routes for roster', () => {
 
+  // beforeEach((done) => {
+// need to add the auth post before each to login and be able to access all these
+  // });
+
 
   it('GET roster returns an object with count and array of student names', () => {
     let name1 = {name: 'first last', classCode: '401n5'};
