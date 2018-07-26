@@ -210,7 +210,20 @@ paths:
         200: 
           description: post ok
           schema: 
-            $ref: '#/definitions/postCode'          
+            $ref: '#/definitions/postCode'
+  /user/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: user id
+          required: true
+      responses:
+        200:
+          description: find a user
+          schema:
+            $ref: "#/definitions/getUser"
 definitions:
   Student:
     type: object
@@ -295,3 +308,19 @@ definitions:
           type: string
         day: 
           type: string
+  getUser:
+      type: object
+      required:
+        - user
+        - jwt
+        - courses
+      properties:
+        user:
+          type: string
+        jwt:
+          type: string
+        courses:
+          type: array
+          items:
+            type: object   
+

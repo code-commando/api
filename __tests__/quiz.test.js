@@ -1,6 +1,6 @@
 import supertest from 'supertest';
 
-import Quiz from '../src/models/quiz.js'
+import Quiz from '../src/models/quiz.js';
 
 const {
   server,
@@ -57,15 +57,13 @@ function checkResponse(response, dayNum) {
       expect(quizItem.answers.includes(quizItem.correctAnswer));
     }
   }
-<<<<<<< HEAD
   
   // TODO: Need tests for 
   // at least 1 should be from the most recent day E.g. asking on Friday gets at least one from Thursday
   // but cannot do that with just only the data in response
 
 }
-=======
-}
+
 
 describe('quiz randomizer', () => {
 
@@ -89,4 +87,3 @@ describe('quiz randomizer', () => {
   });
 
 });
->>>>>>> 03d580fbf61185738b9b26a7b7b7996d2c74e5aa
