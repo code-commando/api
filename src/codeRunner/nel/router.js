@@ -22,6 +22,15 @@ var shaNewFile;
 let fileExtension;
 let dirPath = `${__dirname}/../../../code`;
 router.get('/api/v1/code/:id', auth, (req, res) => {
+  if(req.query.language === 'javascript'){
+    fileExtension = 'js';
+  }
+  else if(req.query.language === 'python'){
+    fileExtension = 'py';
+  }
+  else if(req.query.language === 'java'){
+    fileExtension = 'java';
+  }
   if (req.query.classCode) {
     Classes.find({
       classCode: req.query.classCode,
@@ -34,7 +43,6 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
             'Authorization': `Bearer ${req.cookies.jwt}`,
           })
           .then(arr => {
-            // console.log(arr.body[dayId-1].url);
             let day = arr.body[dayId - 1].url;
             return superagent.get(day)
               .set({
@@ -42,8 +50,8 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
                 'Authorization': `Bearer ${req.cookies.jwt}`,
               })
               .then(data => {
-                let filtered = data.body.filter((e) => e.name.split('.')[1] === 'js');
-                //console.log('filtered --> ', filtered);
+                let filtered = data.body.filter((e) =>
+                  e.name.split('.')[1] === fileExtension);
                 let file = filtered.map((e) => {
                   return {
                     link: e.download_url,
@@ -51,7 +59,6 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
                     sha: e.sha,
                   };
                 });
-                //console.log('file -->', file);
                 res.send(file);
                 res.end();
               });
