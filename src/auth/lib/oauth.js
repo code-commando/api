@@ -41,7 +41,10 @@ const authorize = (req) => {
     })
     .then(newUser => {
       console.log('5. user model created, making token');
-      return newUser.generateToken();
+      return {
+        jwt: newUser.generateToken(),
+        gjwt: gitHubToken,
+      };
     });
 };
 

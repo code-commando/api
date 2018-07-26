@@ -13,6 +13,7 @@ import randomPairs from '../middleware/pairs';
 import auth from '../auth/middleware.js';
 import User from '../models/user.js';
 import Classes from '../models/classes.js';
+
 router.get('/api/v1/:model', auth,(req,res,next) => {
   if(req.params.model === 'roster') {
     if(req.query.classCode){
@@ -49,7 +50,7 @@ router.get('/api/v1/:model', auth,(req,res,next) => {
   }
 });
 
-router.get('/api/v1/:model/random', auth,(req, res) => {
+router.get('/api/v1/:model/random', auth, (req, res) => {
   if(req.query.classCode) {
     req.model.find({classCode: req.query.classCode})
       .then(students => {
@@ -80,8 +81,7 @@ router.get('/api/v1/:model/random', auth,(req, res) => {
   }
 });
 
-
-router.get('/api/v1/:model/pairs', auth,(req, res) => {
+router.get('/api/v1/:model/pairs', auth, (req, res) => {
   if(req.query.classCode) {
     req.model.find({classCode: req.query.classCode})
       .then(students => {
