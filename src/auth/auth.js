@@ -19,10 +19,11 @@ authRouter.get('/', (req, res) => {
 authRouter.get('/oauth', (req, res, next) => {
 
   oauth.authorize(req)
-    .then(token => {
-
+    .then(results => {
+      let token = results.jwt;
+      let gtoken = results.gjwt;
       return superagent.post('http://localhost:3005/oauth')
-        .send({ jwt: token })
+        .send({ jwt: token, gjwt: gtoken })
         .then(() => {
           res.send(`SUCCESS: Please close this window`);
         });
