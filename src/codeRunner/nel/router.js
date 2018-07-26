@@ -129,7 +129,7 @@ router.post('/api/v1/code',auth, (req, res) => {
    * 'POST' a new file doesn't need SHA
    * 'PUT' request is to update existing file and request body should have SHA specific to the file that you are trying to update
    */ 
-        if (req.query.classCode) {
+        if (req.query.classCode && req.body.event === 'save') {
           Classes.find({
             classCode: req.query.classCode,
           }).then(results=>{
@@ -174,6 +174,30 @@ router.post('/api/v1/code',auth, (req, res) => {
               .catch(err=>console.log('error',err));
           });
         }
+        else if(req.body.event === 'run'){
+          onStdoutArray = [];
+          let outputResult = {};
+          if(solution.error){
+            outputResult.error = solution.error;
+            solution.error = null;
+            res.send(outputResult);
+          }
+          else if(solution.log&& solution.return){
+            outputResult.log=solution.log ;
+            outputResult.return = solution.return;
+            solution.log = null;
+            let resultArray = outputResult.log;
+            let finalResult = resultArray.join('') +'\n' + outputResult.return;
+            let resultObject ={};
+            resultObject.output = finalResult;
+            res.send(resultObject);
+          }
+          else if(!solution.log&& solution.return){
+            outputResult.log = null;
+            outputResult.return = solution.return;
+            res.send(outputResult);
+          }
+        }
       },
     });
   }
@@ -181,7 +205,7 @@ router.post('/api/v1/code',auth, (req, res) => {
     let input = null;
     var outputResult = {};
     compileRun.runPython(code, input, function (stdout, stderr, err) {
-      if (req.query.classCode) {
+      if (req.query.classCode && req.body.event === 'save') {
         Classes.find({
           classCode: req.query.classCode,
         }).then(results=>{
@@ -221,7 +245,7 @@ router.post('/api/v1/code',auth, (req, res) => {
   else if(req.body.language === 'java'){
     let input = null;
     compileRun.runJava(code, input, function (stdout, stderr, err) {
-      if (req.query.classCode) {
+      if (req.query.classCode && req.body.event === 'save') {
         Classes.find({
           classCode: req.query.classCode,
         }).then(results=>{
