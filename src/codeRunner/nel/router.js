@@ -15,12 +15,22 @@ let solution = {};
 let onStdoutArray = [];
 let onStderrArray = [];
 var fileName;
+var shaNewFile;
 /*
   change following repo in future depending on github repo
  */
 let fileExtension;
 let dirPath = `${__dirname}/../../../code`;
 router.get('/api/v1/code/:id', auth, (req, res) => {
+  if(req.query.language === 'javascript'){
+    fileExtension = 'js';
+  }
+  else if(req.query.language === 'python'){
+    fileExtension = 'py';
+  }
+  else if(req.query.language === 'java'){
+    fileExtension = 'java';
+  }
   if (req.query.classCode) {
     Classes.find({
       classCode: req.query.classCode,
@@ -33,7 +43,6 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
             'Authorization': `Bearer ${req.cookies.jwt}`,
           })
           .then(arr => {
-            // console.log(arr.body[dayId-1].url);
             let day = arr.body[dayId - 1].url;
             return superagent.get(day)
               .set({
@@ -41,8 +50,8 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
                 'Authorization': `Bearer ${req.cookies.jwt}`,
               })
               .then(data => {
-                let filtered = data.body.filter((e) => e.name.split('.')[1] === 'js');
-                //console.log('filtered --> ', filtered);
+                let filtered = data.body.filter((e) =>
+                  e.name.split('.')[1] === fileExtension);
                 let file = filtered.map((e) => {
                   return {
                     link: e.download_url,
@@ -50,7 +59,6 @@ router.get('/api/v1/code/:id', auth, (req, res) => {
                     sha: e.sha,
                   };
                 });
-                //console.log('file -->', file);
                 res.send(file);
                 res.end();
               });
@@ -80,17 +88,6 @@ router.post('/api/v1/code',auth, (req, res) => {
   
   //get day name information from original electron request after login and append day to github post request
   let day = req.body.day;
-  /**
-   * Following code is written if incase the code file is heavy and needs to be copied to local folder first and then stream to github. Can be used in future or scrap if no future scope is seen
-   * 
-   *let file = `${__dirname}/../tmp/${fileName}.js`;
-    let text = code;
-    fs.writeFile( file, text, (err) => {
-      if(err) { return(err); }
-      console.log('file Saved to temp!');
-    });
-   */
-  /***************/
  
   /*
    * base 64 encoding of code recieved from front end
@@ -113,25 +110,6 @@ router.post('/api/v1/code',auth, (req, res) => {
   if(req.body.sha){
     githubObject.sha = req.body.sha;
   }
-  /**
-   * Make a PUT request to github now. 'Github API considers POST and PUT both as PUT request.
-   * 'POST' a new file to github requires just the SHA of Repo that you will be posting to
-   * 'PUT' request is to update existing file and request body should have SHA specific to the file that you are trying to update
-   */ 
-  if (req.query.classCode) {
-    Classes.find({
-      classCode: req.query.classCode,
-    }).then(results=>{
-      superagent.put(`${results[0].apiLink}${day}/${fileName}`)
-        .set({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${req.cookies.jwt}`,
-        })
-        .send(githubObject)
-        .then(response=>console.log(response.text))
-        .catch(err=>console.log('error',err));
-    });
-  }
   /*
     NEL package work starts here. Compile & execute the code and return response to client
   */
@@ -153,45 +131,112 @@ router.post('/api/v1/code',auth, (req, res) => {
         solution['console.error'] = onStderrArray;
       },
       afterRun: () => {
-        onStdoutArray = [];
-        let outputResult = {};
-        if(solution.error){
-          outputResult.error = solution.error;
-          solution.error = null;
-          res.send(outputResult);
+        /**
+   * Make a PUT request to github now. 'Github API considers POST and PUT both as PUT request.
+   * 'POST' a new file doesn't need SHA
+   * 'PUT' request is to update existing file and request body should have SHA specific to the file that you are trying to update
+   */ 
+        if (req.query.classCode && req.body.event === 'save') {
+          Classes.find({
+            classCode: req.query.classCode,
+          }).then(results=>{
+            superagent.put(`${results[0].apiLink}${day}/${fileName}`)
+              .set({
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${req.cookies.jwt}`,
+              })
+              .send(githubObject)
+              .then(response=>{
+                shaNewFile = response.body.content.sha;
+                fileName = response.body.content.name;
+                onStdoutArray = [];
+                let outputResult = {};
+                if(solution.error){
+                  outputResult.error = solution.error;
+                  solution.error = null;
+                  outputResult.shaNewFile = shaNewFile;
+                  outputResult.fileName = fileName;
+                  res.send(outputResult);
+                }
+                else if(solution.log&& solution.return){
+                  outputResult.log=solution.log ;
+                  outputResult.return = solution.return;
+                  solution.log = null;
+                  let resultArray = outputResult.log;
+                  let finalResult = resultArray.join('') +'\n' + outputResult.return;
+                  let resultObject ={};
+                  resultObject.output = finalResult;
+                  resultObject.shaNewFile = shaNewFile;
+                  resultObject.fileName = fileName;
+                  res.send(resultObject);
+                }
+                else if(!solution.log&& solution.return){
+                  outputResult.log = null;
+                  outputResult.return = solution.return;
+                  outputResult.shaNewFile = shaNewFile;
+                  outputResult.fileName = fileName;
+                  res.send(outputResult);
+                }
+              })
+              .catch(err=>console.log('error',err));
+          });
         }
-        else if(solution.log&& !solution.return){
-          outputResult.log=solution.log ;
-          solution.log = null;
-          let resultArray = outputResult.log;
-          res.send(resultArray);
+        else if(req.body.event === 'run'){
+          onStdoutArray = [];
+          let outputResult = {};
+          if(solution.error){
+            outputResult.error = solution.error;
+            solution.error = null;
+            res.send(outputResult);
+          }
+          else if(solution.log&& solution.return){
+            outputResult.log=solution.log ;
+            outputResult.return = solution.return;
+            solution.log = null;
+            let resultArray = outputResult.log;
+            let finalResult = resultArray.join('') +'\n' + outputResult.return;
+            let resultObject ={};
+            resultObject.output = finalResult;
+            res.send(resultObject);
+          }
+          else if(!solution.log&& solution.return){
+            outputResult.log = null;
+            outputResult.return = solution.return;
+            res.send(outputResult);
+          }
         }
-        else if(solution.log&& solution.return){
-          outputResult.log=solution.log ;
-          outputResult.return = solution.return;
-          solution.log = null;
-          let resultArray = outputResult.log;
-          let finalResult = resultArray.join('') +'\n' + outputResult.return;
-          res.send(finalResult);
-        }
-        else if(!solution.log&& solution.return){
-          outputResult.return = solution.return;
-          res.send(outputResult.return);
-        }
-
       },
     });
   }
   else if(req.body.language === 'python'){
     let input = null;
+    var outputResult = {};
     compileRun.runPython(code, input, function (stdout, stderr, err) {
+      if (req.query.classCode && req.body.event === 'save') {
+        Classes.find({
+          classCode: req.query.classCode,
+        }).then(results=>{
+          superagent.put(`${results[0].apiLink}${day}/${fileName}`)
+            .set({
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${req.cookies.jwt}`,
+            })
+            .send(githubObject)
+            .then(response=>{
+              shaNewFile = response.body.content.sha;
+              fileName = response.body.content.name;
+              outputResult.shaNewFile = shaNewFile;
+              outputResult.fileName = fileName;
+            });
+        });
+      }
       if(!stderr){
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
-          
         });
-        res.send(stdout);
+        outputResult.return = stdout;
+        res.send(outputResult);
       }
       else{
         console.log(err);
@@ -199,27 +244,48 @@ router.post('/api/v1/code',auth, (req, res) => {
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
-        res.send(stderr);
+        outputResult.error = stderr;
+        res.send(outputResult);
       }
     });
   }
   else if(req.body.language === 'java'){
     let input = null;
     compileRun.runJava(code, input, function (stdout, stderr, err) {
+      if (req.query.classCode && req.body.event === 'save') {
+        Classes.find({
+          classCode: req.query.classCode,
+        }).then(results=>{
+          superagent.put(`${results[0].apiLink}${day}/${fileName}`)
+            .set({
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${req.cookies.jwt}`,
+            })
+            .send(githubObject)
+            .then(response=>{
+              shaNewFile = response.body.content.sha;
+              fileName = response.body.content.name;
+              outputResult.shaNewFile = shaNewFile;
+              outputResult.fileName = fileName;
+            });
+        });
+      }
       if(!stderr){
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
-        res.send(stdout);
+        outputResult.return = stdout;
+        res.send(outputResult);
       }
       else{
+        console.log(err);
         fs.remove(dirPath,err=>{
           if (err) return console.error(err);
           console.log('Successfully removed the code dir');
         });
-        console.log(err);
-        res.send(stderr);
+        outputResult.error = stderr;
+        res.send(outputResult);
       }
     });
   }
