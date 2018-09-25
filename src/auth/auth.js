@@ -1,8 +1,8 @@
 'use strict';
-import superagent from 'superagent';
 import express from 'express';
 import fs from 'fs';
 const authRouter = express.Router();
+import querystring from 'querystring';
 
 import oauth from './lib/oauth.js';
 
@@ -22,11 +22,12 @@ authRouter.get('/oauth', (req, res, next) => {
     .then(results => {
       let token = results.jwt;
       let gtoken = results.gjwt;
-      return superagent.post('http://localhost:3005/oauth')
-        .send({ jwt: token, gjwt: gtoken })
-        .then(() => {
-          res.send(`SUCCESS: Please close this window`);
-        });
+      const query = querystring.stringify({
+        token,
+        gtoken,
+      });
+      res.redirect('http://localhost:3005/oauth/?' + query);
+  
     })
     .catch(next);
 

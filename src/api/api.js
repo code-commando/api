@@ -15,8 +15,13 @@ import User from '../models/user.js';
 import Classes from '../models/classes.js';
 
 router.get('/api/v1/:model', auth,(req,res,next) => {
+  console.log('/api/v1/' + req.params.model);
   if(req.params.model === 'roster') {
+
+
+
     if(req.query.classCode){
+
       req.model.find({classCode: req.query.classCode})
         .then(students => {
           let studentName = students.map(student => student.name);
