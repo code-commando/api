@@ -26,11 +26,19 @@ authRouter.get('/oauth', (req, res, next) => {
         token,
         gtoken,
       });
-      res.redirect('http://localhost:3005/oauth/?' + query);
+      res.redirect('http://localhost:3000/oauth/?' + query);
   
     })
     .catch(next);
 
+});
+
+authRouter.get('/authorize', (req, res, next) => {
+  oauth.authorize(req)
+    .then(results => {
+      res.send(results);
+    })
+    .catch(next);
 });
 
 export default authRouter;
