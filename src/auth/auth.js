@@ -16,16 +16,43 @@ authRouter.get('/', (req, res) => {
 });
 
 
+// authRouter.get('/oauth', (req, res, next) => {
+
+//   console.log('headers', req.headers);
+
+//   oauth.authorize(req)
+//     .then(results => {
+//       let token = results.jwt;
+//       let gtoken = results.gjwt;
+//       res.cookie('token', token);
+//       res.cookie('githubtoken', gtoken);
+//       res.redirect(process.env.CLIENT_URL + `/oauth?token=${token}&githubtoken=${gtoken}`);
+
+//     })
+//     .catch(next);
+
+// });
+
 authRouter.get('/oauth', (req, res, next) => {
 
   oauth.authorize(req)
     .then(results => {
-      let token = results.jwt;
-      let gtoken = results.gjwt;
-      res.cookie('token', token);
-      res.cookie('githubtoken', gtoken);
-      res.redirect(process.env.CLIENT_URL + `/oauth?token=${token}&githubtoken=${gtoken}`);
-  
+
+      let userAgent = req.headers['user-agent'];
+      let platform = userAgent;
+      platform = platform.includes('Android') || platform.includes('iPhone') ? 'mobile' : 'Web';
+      if (platform === 'mobile') {
+        res.redirect(`exp://172.16.0.212:19000/--/Login?gitHubToken=${results.gjwt}&authToken=${results.jwt}`);
+        res.end();
+      } else {
+
+        let token = results.jwt;
+        let gtoken = results.gjwt;
+        res.cookie('token', token);
+        res.cookie('githubtoken', gtoken);
+        res.redirect(process.env.CLIENT_URL + `/oauth?token=${token}&githubtoken=${gtoken}`);
+
+      }
     })
     .catch(next);
 
