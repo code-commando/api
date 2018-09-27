@@ -24,19 +24,11 @@ authRouter.get('/oauth', (req, res, next) => {
       let gtoken = results.gjwt;
       res.cookie('token', token);
       res.cookie('githubtoken', gtoken);
-      res.redirect(process.env.CLIENT_URL);
+      res.redirect(process.env.CLIENT_URL + `/oauth?token=${token}&githubtoken=${gtoken}`);
   
     })
     .catch(next);
 
 });
-
-// authRouter.get('/authorize', (req, res, next) => {
-//   oauth.authorize(req)
-//     .then(results => {
-//       res.send(results);
-//     })
-//     .catch(next);
-// });
 
 export default authRouter;
