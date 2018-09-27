@@ -22,23 +22,21 @@ authRouter.get('/oauth', (req, res, next) => {
     .then(results => {
       let token = results.jwt;
       let gtoken = results.gjwt;
-      const query = querystring.stringify({
-        token,
-        gtoken,
-      });
-      res.redirect('http://localhost:3000/oauth/?' + query);
+      res.cookie('token', token);
+      res.cookie('githubtoken', gtoken);
+      res.redirect(process.env.CLIENT_URL);
   
     })
     .catch(next);
 
 });
 
-authRouter.get('/authorize', (req, res, next) => {
-  oauth.authorize(req)
-    .then(results => {
-      res.send(results);
-    })
-    .catch(next);
-});
+// authRouter.get('/authorize', (req, res, next) => {
+//   oauth.authorize(req)
+//     .then(results => {
+//       res.send(results);
+//     })
+//     .catch(next);
+// });
 
 export default authRouter;
