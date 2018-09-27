@@ -42,7 +42,7 @@ authRouter.get('/oauth', (req, res, next) => {
       let platform = userAgent;
       platform = platform.includes('Android') || platform.includes('iPhone') ? 'mobile' : 'Web';
       if (platform === 'mobile') {
-        res.redirect(`exp://172.16.0.212:19000/--/Login?gitHubToken=${results.gjwt}&authToken=${results.jwt}`);
+        res.redirect(`exp://${process.env.MOBILE_CLIENT_URL}/--/Login?gitHubToken=${results.gjwt}&authToken=${results.jwt}`);
         res.end();
       } else {
 
