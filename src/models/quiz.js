@@ -1,13 +1,35 @@
 'use strict';
 
 import superagent from 'superagent';
+import randomizer from '@icantbelieveitsnotrandom/weighted-randomizer';
 
 export default class Quiz {
   static findOne(day, jwt) {
     return Quiz.fetch(day, jwt).then(quizzes => {
       console.log({ quizzes });
       let processed = Quiz.process(quizzes);
-      const questions = Quiz.randomQuiz(processed);
+      let questionObj = {
+        type: 'single',
+        array: processed,
+        index: {
+          a: [0,4],
+          b: [0, (processed.length/2)],
+          c: [0, processed.length]
+        },
+        results: {
+          a: 1,
+          b: 2,
+          c: 2,
+        },
+      };
+      let questions;
+      if (questionObj.array.length < 5) {
+        questions = questionObj.array;
+      }
+      else {
+        questions = randomizer(questionObj);
+      }
+
       return {
         count: questions.length,
         results: questions,
@@ -59,33 +81,33 @@ export default class Quiz {
     return newQuizArr;
   }
 
-  static randomQuiz(allQuestions) {
-    let randomIndex = 0;
-    let questions = [];
-    let selected = [];
-    let maxIndex = allQuestions.length;
-    if (allQuestions.length == 0) {
-      return undefined;
-    }
-    else if (allQuestions.length < 5) {
-      return allQuestions;
-    }
-    else {
-      selected.push(Math.floor((Math.random() * 2)));
-      for (let i = 0; i < 4; i++) {
-        randomIndex = Math.floor((Math.random() * maxIndex));
-        if (selected.includes(randomIndex)) {
-          i--;
-        }
-        else {
-          selected.push(randomIndex);
-        }
-      }
-    }
-    for (let i = 0; i < selected.length; i++) {
-      questions.push(allQuestions[selected[i]]);
-    }
-    console.log(questions);
-    return questions;
-  }
+  // static randomQuiz(allQuestions) {
+  //   let randomIndex = 0;
+  //   let questions = [];
+  //   let selected = [];
+  //   let maxIndex = allQuestions.length;
+  //   if (allQuestions.length == 0) {
+  //     return undefined;
+  //   }
+  //   else if (allQuestions.length < 5) {
+  //     return allQuestions;
+  //   }
+  //   else {
+  //     selected.push(Math.floor((Math.random() * 2)));
+  //     for (let i = 0; i < 4; i++) {
+  //       randomIndex = Math.floor((Math.random() * maxIndex));
+  //       if (selected.includes(randomIndex)) {
+  //         i--;
+  //       }
+  //       else {
+  //         selected.push(randomIndex);
+  //       }
+  //     }
+  //   }
+  //   for (let i = 0; i < selected.length; i++) {
+  //     questions.push(allQuestions[selected[i]]);
+  //   }
+  //   console.log(questions);
+  //   return questions;
+  // }
 }

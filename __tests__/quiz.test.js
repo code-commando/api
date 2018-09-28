@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import randomizer from '@icantbelieveitsnotrandom/weighted-randomizer';
 
 import Quiz from '../src/models/quiz.js';
 
@@ -69,20 +70,25 @@ describe('quiz randomizer', () => {
 
   it('returns undefined from an array with no questions', () => {
     let randomQuestion = [];
-    let randomQuiz = Quiz.randomQuiz(randomQuestion);
-    expect(randomQuiz).toBe(undefined);
-  });
-
-  it('returns all questions from array if less than 5 question', () => {
-    let randomQuestion = ['Who do you love?', 'Are you for sure?', 'Do tacos taste like cats'];
-    let randomQuiz = Quiz.randomQuiz(randomQuestion);
-    expect(randomQuiz.length).toBe(3);
+    let randomQuiz = randomizer(randomQuestion);
+    expect(randomQuiz).toBe(null);
   });
 
   it('returns different sets of random questions from an array with > 5 questions', () => {
-    let randomQuestion = ['Who do you love?', 'Are you for sure?', 'Do tacos taste like cats', 'Is Autumn going to make it through the night?', 'Is Ariel going to love her new Roomba?', 'Is Tama going to win the CMAs'];
-    let randomQuiz1 = Quiz.randomQuiz(randomQuestion);
-    let randomQuiz2 = Quiz.randomQuiz(randomQuestion);
+    let questionObj = {
+      type: 'single',
+      array: ['Who do you love?', 'Are you for sure?', 'Do tacos taste like cats', 'Is Autumn going to make it through the night?', 'Is Ariel going to love her new Roomba?', 'Is Tama going to win the CMAs'],
+      index: {
+        a: [0,4],
+        b: [0, 5],
+      },
+      results: {
+        a: 1,
+        b: 4,
+      },
+    };
+    let randomQuiz1 = randomizer(questionObj);
+    let randomQuiz2 = randomizer(questionObj);
     expect(randomQuiz1).not.toEqual(randomQuiz2);
   });
 
