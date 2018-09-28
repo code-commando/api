@@ -40,11 +40,25 @@ authRouter.get('/oauth', (req, res, next) => {
 
       let userAgent = req.headers['user-agent'];
       let platform = userAgent;
+      // platform = platform.includes('Android') || platform.includes('iPhone') ? 'mobile' : 'Web';
+      // if (platform === 'mobile') {
+      //   res.redirect(`exp://${process.env.MOBILE_CLIENT_URL}/--/Login?gitHubToken=${results.gjwt}&authToken=${results.jwt}`);
+      //   res.end();
+      // } 
+      let iPhonePlatform = platform.includes('iPhone')
       platform = platform.includes('Android') || platform.includes('iPhone') ? 'mobile' : 'Web';
+     
       if (platform === 'mobile') {
-        res.redirect(`exp://${process.env.MOBILE_CLIENT_URL}/--/Login?gitHubToken=${results.gjwt}&authToken=${results.jwt}`);
+        if (iPhonePlatform) {
+          res.redirect(`exp://${process.env.IPHONE_MOBILE_CLIENT_URL}/--/Login?gitHubToken=${results.gjwt}&authToken=${results.jwt}`);
+          res.end();
+        } 
+        else{
+        res.redirect(`exp://${process.env.ANDROID_MOBILE_CLIENT_URL}/--/Login?gitHubToken=${results.gjwt}&authToken=${results.jwt}`);
         res.end();
-      } else {
+        }
+      } 
+      else {
 
         let token = results.jwt;
         let gtoken = results.gjwt;
